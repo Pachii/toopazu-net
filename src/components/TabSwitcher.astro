@@ -1,0 +1,126 @@
+---
+interface Props {
+  leftTab: string;
+  rightTab: string;
+}
+const { leftTab, rightTab } = Astro.props;
+---
+<div class="tab-switcher-container">
+  <div class="tab-switcher">
+    <button class="tab-btn active" data-target="links-view">
+      <span data-i18n="tab.main">{leftTab}</span>
+    </button>
+    <button class="tab-btn" data-target="projects-view">
+      <span data-i18n="tab.special">{rightTab}</span>
+    </button>
+    <div class="tab-slider"></div>
+  </div>
+</div>
+
+<style>
+  .tab-switcher-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 32px;
+  }
+
+  .tab-switcher {
+    position: relative;
+    display: flex;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 24px;
+    padding: 4px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+    width: 260px; /* Fixed width prevents jittering */
+  }
+
+  .tab-btn {
+    flex: 1; /* Both buttons always take up EXACTLY 50% */
+    position: relative;
+    z-index: 2;
+    padding: 0;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--text-light);
+    border-radius: 20px;
+    transition: color 0.3s ease;
+  }
+
+  .tab-btn.active {
+    color: var(--text-main);
+  }
+
+  .tab-slider {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    height: calc(100% - 8px);
+    width: calc(50% - 4px); /* Exact half of the pill width minus padding */
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: 1;
+  }
+
+  /* When the second button is active, slide the background to the right */
+  .tab-switcher.right-active .tab-slider {
+    transform: translateX(100%);
+  }
+</style>
+
+<script>
+  function setupTabs() {
+    const switcher = document.querySelector('.tab-switcher');
+    const btns = document.querySelectorAll('.tab-btn');
+    const views = {
+      'links-view': document.getElementById('links-view'),
+      'projects-view': document.getElementById('projects-view'),
+    };
+
+    if (!switcher) return;
+
+    btns.forEach((btn, index) => {
+      btn.addEventListener('click', (e) => {
+        // Update slider position
+        if (index === 1) {
+          switcher.classList.add('right-active');
+        } else {
+          switcher.classList.remove('right-active');
+        }
+
+        // Update button active states
+        btns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Swap views
+        const target = (e.currentTarget as HTMLButtonElement).dataset.target;
+        
+        Object.entries(views).forEach(([id, element]) => {
+          if (element) {
+            if (id === target) {
+              element.style.display = 'block';
+              // slight delay to allow display block to apply before animating opacity
+              setTimeout(() => {
+                element.style.opacity = '1';
+                element.style.transform = 'translateY(0)';
+              }, 10);
+            } else {
+              element.style.opacity = '0';
+              element.style.transform = 'translateY(10px)';
+              element.style.display = 'none';
+            }
+          }
+        });
+      });
+    });
+  }
+
+  // Run on load
+  setupTabs();
+</script>

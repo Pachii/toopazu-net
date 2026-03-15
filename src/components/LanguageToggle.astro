@@ -1,0 +1,64 @@
+---
+export interface Props {
+  currentLang: string;
+  languages: Record<string, string>;
+}
+
+const { currentLang, languages } = Astro.props;
+---
+<div class="lang-toggle-wrapper">
+  <div class="lang-toggle">
+    {Object.entries(languages).map(([langCode, langName]) => (
+      <button 
+        class={`lang-btn ${currentLang === langCode ? 'active' : ''}`}
+        aria-label={`Switch to ${langName}`}
+        data-lang={langCode}
+        onclick={`window.setLanguage('${langCode}')`}
+      >
+        {langCode.toUpperCase()}
+      </button>
+    ))}
+  </div>
+</div>
+
+<style>
+  .lang-toggle-wrapper {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    z-index: 10;
+  }
+
+  .lang-toggle {
+    display: flex;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 4px;
+    border-radius: 20px;
+    backdrop-filter: blur(8px);
+  }
+
+  .lang-btn {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 16px;
+    transition: var(--transition);
+    color: var(--text-light);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .lang-btn:hover {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.7);
+  }
+
+  .lang-btn.active {
+    background: #ffffff;
+    color: var(--text-main);
+    box-shadow: var(--card-shadow);
+  }
+</style>

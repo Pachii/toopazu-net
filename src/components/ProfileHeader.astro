@@ -1,0 +1,87 @@
+---
+import { Icon } from 'astro-icon/components';
+import { getLangFromUrl } from '../i18n/utils';
+
+interface Props {
+  name: string;
+  handle: string;
+  roleText: string;
+  dateText: string;
+  avatarUrl: string;
+}
+
+const { name, handle, roleText, dateText, avatarUrl } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const projectUrl = `/${lang}/projects/topaz-pan`;
+---
+<header class="profile-header">
+  <div class="avatar-container">
+    <img src={avatarUrl} alt={name} class="avatar" />
+  </div>
+  
+  <h1 class="name">{name}</h1>
+  <p class="handle">{handle}</p>
+  
+  <div class="meta">
+    <div class="role-wrapper">
+      <p class="role" data-i18n="profile.role">{roleText}</p>
+    </div>
+    <p class="date">{dateText}</p>
+  </div>
+</header>
+
+<style>
+  .profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 40px;
+  }
+
+  .avatar-container {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background-color: #a4d2e8; /* Default blue placeholder fallback */
+    overflow: hidden;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Optional soft shadow */
+  }
+
+  .avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--text-main);
+  }
+
+  .handle {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-bottom: 24px;
+  }
+
+  .meta {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    line-height: 1.6;
+    letter-spacing: 0.05em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .role-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+</style>

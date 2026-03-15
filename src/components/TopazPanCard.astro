@@ -1,0 +1,160 @@
+---
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  title: string;
+  description: string;
+  githubText: string;
+}
+
+const { title, description, githubText } = Astro.props;
+---
+<a href="https://github.com/Pachii/topaz-pan" target="_blank" rel="noopener noreferrer" class="plugin-card">
+  <div class="card-inner">
+    <div class="plugin-header">
+      <h2 class="plugin-title" data-i18n="project.title">{title}</h2>
+      <span class="version">v0.1.0-alpha</span>
+    </div>
+
+    <p class="description" data-i18n="project.subtitle">{description}</p>
+
+    <!-- Clean, minimal visual hook for what the plugin does -->
+    <div class="graphic">
+      <div class="slider-row">
+        <div class="line"></div>
+        <div class="thumb left-thumb"></div>
+      </div>
+      <div class="slider-row">
+        <div class="line"></div>
+        <div class="thumb right-thumb"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="plugin-footer">
+    <div class="download-hint">
+      <Icon name="simple-icons:github" size={16} />
+      <span data-i18n="project.github">{githubText}</span>
+    </div>
+  </div>
+</a>
+
+<style>
+  .plugin-card {
+    display: flex;
+    flex-direction: column;
+    background-color: #79b4c9; /* Matching the plugin UI background color */
+    border-radius: var(--border-radius);
+    color: #ffffff;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: var(--card-shadow);
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+  }
+
+  .plugin-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(121, 180, 201, 0.3);
+  }
+
+  .card-inner {
+    padding: 24px 28px;
+    flex-grow: 1;
+  }
+
+  .plugin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+
+  .plugin-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    margin: 0;
+  }
+
+  .version {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    font-weight: 500;
+  }
+
+  .description {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    opacity: 0.9;
+    margin-bottom: 32px;
+  }
+
+  /* Interactive abstract graphic */
+  .graphic {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 60%;
+    margin: 0 auto 16px auto;
+  }
+
+  .slider-row {
+    position: relative;
+    height: 12px;
+    display: flex;
+    align-items: center;
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 1px;
+  }
+
+  .thumb {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-radius: 50%;
+    top: 50%;
+    margin-top: -6px;
+    left: 50%;
+    margin-left: -6px;
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+
+  /* Panning and Haas effect subtle animation on hover */
+  .plugin-card:hover .left-thumb {
+    transform: translateX(-40px);
+  }
+  .plugin-card:hover .right-thumb {
+    transform: translateX(40px);
+    transition-delay: 0.08s;
+  }
+
+  .plugin-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 14px 28px;
+    display: flex;
+    justify-content: flex-end;
+    background: rgba(0, 0, 0, 0.03);
+  }
+
+  .download-hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    opacity: 0.95;
+    transition: opacity 0.2s;
+  }
+
+  .plugin-card:hover .download-hint {
+    opacity: 1;
+  }
+</style>

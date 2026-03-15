@@ -1,0 +1,74 @@
+---
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  title: string;
+  titleI18nKey?: string;
+  subtitle: string;
+  subtitleI18nKey?: string;
+  url: string;
+  icon: string;
+}
+
+const { title, titleI18nKey, subtitle, subtitleI18nKey, url, icon } = Astro.props;
+---
+<a href={url} target="_blank" rel="noopener noreferrer" class="link-card">
+  <div class="icon-wrapper">
+    <Icon name={icon} size={28} />
+  </div>
+  <div class="content">
+    <h2 class="title" data-i18n={titleI18nKey}>{title}</h2>
+    <p class="subtitle" data-i18n={subtitleI18nKey}>{subtitle}</p>
+  </div>
+</a>
+
+<style>
+  .link-card {
+    display: flex;
+    align-items: center;
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+  }
+
+  .link-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  .icon-wrapper {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+    color: #666;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+  }
+
+  .title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+    color: #333;
+  }
+
+  .subtitle {
+    font-size: 0.75rem;
+    color: var(--text-light);
+  }
+</style>

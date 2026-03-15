@@ -1,0 +1,98 @@
+---
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  links: { id: string; nameKey: string; handle: string; icon: string; url: string }[];
+  t: (key: any) => string;
+}
+
+const { links, t } = Astro.props;
+---
+<div class="social-row">
+  {links.map((link) => (
+    <div class="icon-container">
+      <a 
+        href={link.url} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        class="social-icon"
+        aria-label={`Link to ${link.id}`}
+      >
+        <Icon name={link.icon} size={24} />
+      </a>
+      <div class="tooltip">
+        <span class="tooltip-title" data-i18n={link.nameKey}>{t(link.nameKey as any)}</span>
+        <span class="tooltip-handle">{link.handle}</span>
+      </div>
+    </div>
+  ))}
+</div>
+
+<style>
+  .social-row {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin: 24px 0;
+  }
+
+  .icon-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+
+  .social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-light);
+    transition: var(--transition);
+    padding: 8px;
+  }
+
+  .social-icon:hover {
+    color: var(--text-main);
+    transform: translateY(-2px);
+  }
+
+  .tooltip {
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    padding: 6px 12px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 10;
+  }
+
+  .icon-container:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .tooltip-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 2px;
+  }
+
+  .tooltip-handle {
+    font-size: 0.7rem;
+    color: var(--text-light);
+  }
+</style>
