@@ -25,6 +25,8 @@ export const ui = {
     'tab.commission': 'commission',
     'tab.special': 'software',
     'previous.works': 'past covers',
+    'mixed.works': 'selected mix works',
+    'mixed.note': 'A few cover works I have mixed.',
   },
   jp: {
     'profile.role': '歌、mix & master',
@@ -45,5 +47,7 @@ export const ui = {
     'tab.commission': 'mix依頼',
     'tab.special': 'ソフトウェア',
     'previous.works': '歌ってみた一覧',
+    'mixed.works': '過去担当作品',
+    'mixed.note': 'これまでにMIXを担当させていただいた作品の一部です。',
   },
 } as const;

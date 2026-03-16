@@ -7,6 +7,7 @@ import FeaturedCard from './FeaturedCard.astro';
 import TopazPanCard from './TopazPanCard.astro';
 import CommissionCard from './CommissionCard.astro';
 import PreviousWorksCarousel from './PreviousWorksCarousel.astro';
+import MixedWorksList from './MixedWorksList.astro';
 
 import { defaultLang, ui } from '../i18n/ui';
 import { profileInfo, socialLinks, featuredData } from '../data/profile';
@@ -23,6 +24,7 @@ const serverLang = forcedLang ?? defaultLang;
 const t = (key: keyof typeof ui['en']) => ui[serverLang][key];
 
 const videos = await getPlaylistVideos('PLBRf9rHBrMc-4bXWqTUBIUfmRRw7Sjzy-');
+const mixedVideos = await getPlaylistVideos('PLBRf9rHBrMc9JkiqjyOp7BOQLBSIeRCfV');
 const topazPanVersion = await getTopazPanVersion();
 const latestVideo = videos.length > 0 ? videos[0] : null;
 const previousVideos = videos.length > 1 ? videos.slice(1) : [];
@@ -39,6 +41,13 @@ if (latestVideo && latestVideo.titles) {
 previousVideos.forEach(v => {
   clientTranslations.en[`video-${v.id}`] = v.titles.en;
   if (clientTranslations.jp) clientTranslations.jp[`video-${v.id}`] = v.titles.ja;
+});
+
+mixedVideos.forEach(v => {
+  clientTranslations.en[`mixed-video-${v.id}`] = v.titles.en;
+  clientTranslations.en[`mixed-author-${v.id}`] = v.authors.en;
+  if (clientTranslations.jp) clientTranslations.jp[`mixed-video-${v.id}`] = v.titles.ja;
+  if (clientTranslations.jp) clientTranslations.jp[`mixed-author-${v.id}`] = v.authors.ja;
 });
 
 const featuredTitle = t('featured.badge');
@@ -88,6 +97,21 @@ const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
     };
 
     window.translations = translations;
+
+    const getInitialLanguage = () => {
+      const { routeLang } = getRouteInfo();
+      let lang = forcedLang || routeLang || localStorage.getItem('preferred-language');
+
+      if (!lang) {
+        const browserLang = navigator.language || navigator.userLanguage || '';
+        lang = normalizeLanguage(browserLang.split('-')[0].toLowerCase());
+      }
+
+      return normalizeLanguage(lang);
+    };
+
+    const initialLanguage = getInitialLanguage();
+    document.documentElement.lang = getHtmlLang(initialLanguage);
 
     window.setLanguage = function(lang, animate = true) {
       lang = normalizeLanguage(lang);
@@ -151,16 +175,8 @@ const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
     };
 
     document.addEventListener("DOMContentLoaded", () => {
-      const { routeLang } = getRouteInfo();
-      let lang = forcedLang || routeLang || localStorage.getItem('preferred-language');
-
-      if (!lang) {
-        const browserLang = navigator.language || navigator.userLanguage || '';
-        lang = normalizeLanguage(browserLang.split('-')[0].toLowerCase());
-      }
-
       if (typeof window.setLanguage === 'function') {
-        window.setLanguage(lang, false);
+        window.setLanguage(initialLanguage, false);
       }
     });
   </script>
@@ -168,7 +184,6 @@ const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
   <style is:global>
     [data-i18n] {
       transition: opacity 0.15s ease-out, transform 0.15s ease-out, filter 0.15s ease-out;
-      display: inline-block;
     }
   </style>
 
@@ -202,6 +217,12 @@ const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
         videos={previousVideos}
         titleI18nKey="previous.works"
         titleText={t('previous.works')}
+        defaultLang={serverLang}
+      />
+      <MixedWorksList
+        videos={mixedVideos}
+        titleI18nKey="mixed.works"
+        titleText={t('mixed.works')}
         defaultLang={serverLang}
       />
     </div>

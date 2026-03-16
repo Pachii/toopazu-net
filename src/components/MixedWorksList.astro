@@ -1,0 +1,196 @@
+---
+import type { PlaylistVideo } from '../utils/youtube';
+
+interface Props {
+  videos: PlaylistVideo[];
+  titleI18nKey: string;
+  titleText: string;
+  defaultLang: string;
+}
+
+const { videos, titleI18nKey, titleText, defaultLang } = Astro.props;
+---
+{videos.length > 0 && (
+  <section class="mixlog-section">
+    <div class="mixlog-header">
+      <h3 class="section-title"><span data-i18n={titleI18nKey}>{titleText}</span></h3>
+      <p class="section-note" data-i18n="mixed.note">
+        {defaultLang === 'jp'
+          ? 'これまでにMIXを担当させていただいた作品の一部です。'
+          : 'A few cover works I have mixed.'}
+      </p>
+    </div>
+
+    <div class="mixlog-list">
+      {videos.map((video, index) => (
+        <a
+          href={`https://youtube.com/watch?v=${video.id}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="mixlog-row"
+        >
+          <span class="mixlog-index">{String(index + 1).padStart(2, '0')}</span>
+          <div class="mixlog-thumb">
+            <img
+              src={`https://img.youtube.com/vi/${video.id}/mqdefault.jpg`}
+              alt={video.titles[defaultLang] || video.titles.en}
+              loading="lazy"
+            />
+          </div>
+          <div class="mixlog-main">
+            <p class="mixlog-title" data-i18n={`mixed-video-${video.id}`}>
+              {video.titles[defaultLang] || video.titles.en}
+            </p>
+            <p class="mixlog-author" data-i18n={`mixed-author-${video.id}`}>
+              {video.authors[defaultLang] || video.authors.en}
+            </p>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+)}
+
+<style>
+  .mixlog-section {
+    margin-top: 36px;
+    padding: 18px 18px 8px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.62)),
+      linear-gradient(135deg, rgba(121, 180, 201, 0.12), rgba(255, 255, 255, 0));
+    border: 1px solid rgba(121, 180, 201, 0.16);
+    border-radius: calc(var(--border-radius) + 4px);
+    box-shadow: 0 16px 40px rgba(121, 180, 201, 0.08);
+    animation: fadeIn 0.6s ease forwards;
+  }
+
+  .mixlog-header {
+    margin-bottom: 18px;
+  }
+
+  .section-title {
+    font-size: 0.98rem;
+    font-weight: 700;
+    margin: 0 0 8px;
+    color: var(--text-main);
+  }
+
+  .section-note {
+    margin: 0;
+    font-size: 0.82rem;
+    color: var(--text-light);
+    line-height: 1.5;
+  }
+
+  .mixlog-list {
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .mixlog-row {
+    display: grid;
+    grid-template-columns: 30px 172px minmax(0, 1fr);
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    text-decoration: none;
+    color: inherit;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    transition: background-color 0.2s ease;
+  }
+
+  .mixlog-row:hover {
+    background: rgba(255, 255, 255, 0.32);
+  }
+
+  .mixlog-row:hover .mixlog-thumb img {
+    transform: scale(1.03);
+  }
+
+  .mixlog-index {
+    display: block;
+    width: 30px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #4f7f91;
+    letter-spacing: 0.12em;
+    line-height: 1;
+  }
+
+  .mixlog-main {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .mixlog-thumb {
+    width: 172px;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(121, 180, 201, 0.16);
+    box-shadow: 0 8px 20px rgba(121, 180, 201, 0.12);
+  }
+
+  .mixlog-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+  }
+
+  .mixlog-author {
+    display: block;
+    width: 100%;
+    margin: 0;
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--text-light);
+    line-height: 1.4;
+  }
+
+  .mixlog-title {
+    display: block;
+    width: 100%;
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.45;
+    color: var(--text-main);
+  }
+
+  @media (max-width: 640px) {
+    .mixlog-section {
+      padding: 16px 14px 6px;
+    }
+
+    .mixlog-row {
+      grid-template-columns: 24px 112px minmax(0, 1fr);
+      align-items: start;
+      gap: 10px;
+      padding: 14px 0;
+    }
+
+    .mixlog-thumb {
+      width: 112px;
+      border-radius: 12px;
+    }
+
+    .mixlog-index {
+      font-size: 0.62rem;
+      width: 24px;
+      padding-top: 4px;
+    }
+
+    .mixlog-main {
+      gap: 5px;
+    }
+
+    .mixlog-title {
+      font-size: 0.92rem;
+    }
+  }
+</style>

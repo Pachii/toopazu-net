@@ -1,4 +1,10 @@
-export async function getPlaylistVideos(playlistId: string): Promise<{ id: string, titles: Record<string, string> }[]> {
+export interface PlaylistVideo {
+  id: string;
+  titles: Record<string, string>;
+  authors: Record<string, string>;
+}
+
+export async function getPlaylistVideos(playlistId: string): Promise<PlaylistVideo[]> {
   try {
     const url = `https://www.youtube.com/playlist?list=${playlistId}`;
     
@@ -16,7 +22,7 @@ export async function getPlaylistVideos(playlistId: string): Promise<{ id: strin
       const match = html.match(/var ytInitialData = (\{.*?\});<\/script>/);
       if (!match) return [];
       
-      const videos: {id: string, title: string}[] = [];
+      const videos: { id: string; title: string; author: string }[] = [];
       try {
         const data = JSON.parse(match[1]);
         
@@ -26,7 +32,8 @@ export async function getPlaylistVideos(playlistId: string): Promise<{ id: strin
             const r = obj.playlistVideoRenderer;
             videos.push({
               id: r.videoId,
-              title: r.title?.runs?.[0]?.text || 'Video'
+              title: r.title?.runs?.map((run: { text?: string }) => run.text || '').join('') || 'Video',
+              author: r.shortBylineText?.runs?.map((run: { text?: string }) => run.text || '').join('') || 'Unknown Artist',
             });
           }
           for (const key of Object.keys(obj)) {
@@ -49,6 +56,10 @@ export async function getPlaylistVideos(playlistId: string): Promise<{ id: strin
       titles: {
         en: v.title.replace(/\\u0026/g, '&'),
         ja: videosJa[i] ? videosJa[i].title.replace(/\\u0026/g, '&') : v.title.replace(/\\u0026/g, '&')
+      },
+      authors: {
+        en: v.author.replace(/\\u0026/g, '&'),
+        ja: videosJa[i] ? videosJa[i].author.replace(/\\u0026/g, '&') : v.author.replace(/\\u0026/g, '&')
       }
     }));
   } catch (e) {
