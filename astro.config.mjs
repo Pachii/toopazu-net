@@ -5,5 +5,6 @@ import icon from 'astro-icon';
 export default defineConfig({
   output: 'static',
   site: 'https://toopazu.net',
+  trailingSlash: 'never',
   integrations: [icon()]
 });
