@@ -17,7 +17,7 @@ const { videos, titleI18nKey, titleText, defaultLang } = Astro.props;
       <div class="carousel-container" id="works-carousel">
         {videos.map((v, index) => (
           <a href={`https://youtube.com/watch?v=${v.id}`} target="_blank" rel="noopener noreferrer" class="carousel-item">
-            <span class="item-index">{String(index + 1).padStart(2, '0')}</span>
+            <span class="item-index">{String(videos.length - index).padStart(2, '0')}</span>
             <div class="image-wrapper">
               <img src={`https://img.youtube.com/vi/${v.id}/maxresdefault.jpg`} alt="Cover" loading="lazy" />
             </div>
@@ -25,6 +25,17 @@ const { videos, titleI18nKey, titleText, defaultLang } = Astro.props;
               <p class="item-title" data-i18n={`video-${v.id}`}>{v.titles[defaultLang]}</p>
             </div>
           </a>
+        ))}
+      </div>
+
+      <div class="carousel-progress" aria-hidden="true">
+        {videos.map((_, index) => (
+          <button
+            type="button"
+            class={`progress-dot ${index === 0 ? 'is-active' : ''}`}
+            data-index={index}
+            aria-label={`Go to cover ${index + 1}`}
+          ></button>
         ))}
       </div>
     </div>
@@ -66,9 +77,12 @@ const { videos, titleI18nKey, titleText, defaultLang } = Astro.props;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
     gap: 18px;
-    padding: 6px 4px 18px;
+    padding: 6px 4px 10px;
     -ms-overflow-style: none;
     scrollbar-width: none;
+    overscroll-behavior-x: contain;
+    mask-image: linear-gradient(to right, transparent 0, black 20px, black calc(100% - 20px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, black 20px, black calc(100% - 20px), transparent 100%);
   }
 
   .carousel-container::-webkit-scrollbar {
@@ -160,6 +174,30 @@ const { videos, titleI18nKey, titleText, defaultLang } = Astro.props;
     -webkit-box-orient: vertical;
   }
 
+  .carousel-progress {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .progress-dot {
+    width: 18px;
+    height: 4px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(121, 180, 201, 0.18);
+    transition: width 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
+    cursor: pointer;
+  }
+
+  .progress-dot.is-active {
+    width: 34px;
+    background: rgba(79, 127, 145, 0.72);
+    transform: translateY(-1px);
+  }
+
   @media (max-width: 640px) {
     .carousel-shell {
       padding: 14px;
@@ -171,7 +209,7 @@ const { videos, titleI18nKey, titleText, defaultLang } = Astro.props;
 
     .carousel-container {
       gap: 14px;
-      padding: 4px 2px 14px;
+      padding: 4px 2px 8px;
     }
 
     .carousel-item {
@@ -185,6 +223,19 @@ const { videos, titleI18nKey, titleText, defaultLang } = Astro.props;
     .carousel-item.is-active {
       transform: translateY(-6px);
     }
+
+    .carousel-progress {
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .progress-dot {
+      width: 14px;
+    }
+
+    .progress-dot.is-active {
+      width: 28px;
+    }
   }
 </style>
 
@@ -193,6 +244,7 @@ const { videos, titleI18nKey, titleText, defaultLang } = Astro.props;
     const carousel = document.getElementById('works-carousel');
     if (!carousel) return;
     const items = Array.from(carousel.querySelectorAll('.carousel-item'));
+    const progressDots = Array.from(document.querySelectorAll('.progress-dot'));
 
     let isHovering = false;
     let frameId = 0;
@@ -221,6 +273,11 @@ const { videos, titleI18nKey, titleText, defaultLang } = Astro.props;
       items.forEach((item) => {
         item.classList.toggle('is-active', item === activeItem);
       });
+
+      const activeIndex = items.findIndex((item) => item === activeItem);
+      progressDots.forEach((dot, index) => {
+        dot.classList.toggle('is-active', index === activeIndex);
+      });
     };
 
     const queueActiveUpdate = () => {
@@ -230,6 +287,13 @@ const { videos, titleI18nKey, titleText, defaultLang } = Astro.props;
 
     carousel.addEventListener('scroll', queueActiveUpdate, { passive: true });
     window.addEventListener('resize', queueActiveUpdate);
+    progressDots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        const target = items[index];
+        if (!target) return;
+        target.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      });
+    });
     queueActiveUpdate();
 
     setInterval(() => {

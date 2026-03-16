@@ -19,6 +19,15 @@
   padding: 0;
 }
 
+html {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
 body {
   font-family: 'Inter', 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'BIZ UDPGothic', 'Meiryo', system-ui, -apple-system, sans-serif;
   background-color: var(--bg-color);
@@ -26,6 +35,7 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+  scrollbar-width: none;
 }
 
 a {

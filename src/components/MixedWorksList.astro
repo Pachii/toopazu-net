@@ -29,7 +29,7 @@ const { videos, titleI18nKey, titleText, defaultLang } = Astro.props;
           rel="noopener noreferrer"
           class="mixlog-row"
         >
-          <span class="mixlog-index">{String(index + 1).padStart(2, '0')}</span>
+          <span class="mixlog-index">{String(videos.length - index).padStart(2, '0')}</span>
           <div class="mixlog-thumb">
             <img
               src={`https://img.youtube.com/vi/${video.id}/mqdefault.jpg`}
