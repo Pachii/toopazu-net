@@ -5,15 +5,16 @@ interface Props {
   title: string;
   description: string;
   githubText: string;
+  version: string;
 }
 
-const { title, description, githubText } = Astro.props;
+const { title, description, githubText, version } = Astro.props;
 ---
 <a href="https://github.com/Pachii/topaz-pan" target="_blank" rel="noopener noreferrer" class="plugin-card">
   <div class="card-inner">
     <div class="plugin-header">
       <h2 class="plugin-title" data-i18n="project.title">{title}</h2>
-      <span class="version">v0.1.0-alpha</span>
+      <span class="version">{version}</span>
     </div>
 
     <p class="description" data-i18n="project.subtitle">{description}</p>

@@ -10,6 +10,7 @@ import PreviousWorksCarousel from './PreviousWorksCarousel.astro';
 
 import { defaultLang, ui } from '../i18n/ui';
 import { profileInfo, socialLinks, featuredData } from '../data/profile';
+import { getTopazPanVersion } from '../utils/github';
 import { getPlaylistVideos } from '../utils/youtube';
 import type { AppLang } from '../i18n/utils';
 
@@ -22,6 +23,7 @@ const serverLang = forcedLang ?? defaultLang;
 const t = (key: keyof typeof ui['en']) => ui[serverLang][key];
 
 const videos = await getPlaylistVideos('PLBRf9rHBrMc-4bXWqTUBIUfmRRw7Sjzy-');
+const topazPanVersion = await getTopazPanVersion();
 const latestVideo = videos.length > 0 ? videos[0] : null;
 const previousVideos = videos.length > 1 ? videos.slice(1) : [];
 
@@ -212,6 +214,7 @@ const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
       <TopazPanCard 
         title={t('project.title')} 
         description={t('project.subtitle')} 
+        version={topazPanVersion}
         githubText={t('project.github')} 
       />
     </div>
