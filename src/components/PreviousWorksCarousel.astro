@@ -1,0 +1,146 @@
+---
+interface Props {
+  videos: { id: string, titles: Record<string, string> }[];
+  titleI18nKey: string;
+  titleText: string;
+  defaultLang: string;
+}
+const { videos, titleI18nKey, titleText, defaultLang } = Astro.props;
+---
+{videos.length > 0 && (
+  <div class="carousel-section">
+    <h3 class="section-title"><span data-i18n={titleI18nKey}>{titleText}</span></h3>
+    
+    <div class="carousel-container" id="works-carousel">
+      {videos.map((v) => (
+        <a href={`https://youtube.com/watch?v=${v.id}`} target="_blank" rel="noopener noreferrer" class="carousel-item">
+          <div class="image-wrapper">
+            <img src={`https://img.youtube.com/vi/${v.id}/maxresdefault.jpg`} alt="Cover" loading="lazy" />
+          </div>
+          <div class="item-footer">
+            <p data-i18n={`video-${v.id}`}>{v.titles[defaultLang]}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+)}
+
+<style>
+  .carousel-section {
+    margin-top: 32px;
+    animation: fadeIn 0.6s ease forwards;
+  }
+  .section-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    padding-left: 4px;
+    color: var(--text-main);
+  }
+  .carousel-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    gap: 16px;
+    padding-bottom: 24px;   /* Increased to give breathing room for shadows */
+    padding-top: 8px;       /* Fix top clipping for transform: scale */
+    margin-top: -8px;       /* Offset the top padding to keep layout aligned */
+    
+    /* Hide scrollbar */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .carousel-container::-webkit-scrollbar {
+    display: none;
+  }
+  .carousel-item {
+    flex: 0 0 calc(50% - 8px); /* Exactly half the container minus the gap */
+    scroll-snap-align: start;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+    background: var(--card-bg);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    text-decoration: none;
+  }
+  .carousel-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+  }
+  .carousel-item:hover .item-footer {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  .image-wrapper {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 16 / 9;
+    background-color: #ebebeb;
+    display: flex;
+    position: relative;
+    z-index: 1;
+  }
+  .image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .item-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.6) 60%, transparent 100%);
+    padding: 32px 16px 16px 16px;
+    transform: translateY(100%);
+    opacity: 0;
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease;
+    z-index: 2;
+  }
+  .item-footer p {
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const carousel = document.getElementById('works-carousel');
+    if (!carousel) return;
+
+    let isHovering = false;
+    carousel.addEventListener('mouseenter', () => isHovering = true);
+    carousel.addEventListener('mouseleave', () => isHovering = false);
+
+    // Auto-scroll function
+    setInterval(() => {
+      if (isHovering) return;
+
+      const firstChild = carousel.firstElementChild as HTMLElement;
+      if (!firstChild) return;
+
+      const itemWidth = firstChild.offsetWidth + 16;
+      const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+
+      if (carousel.scrollLeft >= maxScroll - 5) {
+        carousel.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        carousel.scrollBy({ left: itemWidth, behavior: 'smooth' });
+      }
+    }, 4000);
+  });
+</script>

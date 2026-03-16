@@ -1,4 +1,4 @@
-export async function getLatestVideo(playlistId: string): Promise<{ id: string, titles: Record<string, string> } | null> {
+export async function getPlaylistVideos(playlistId: string): Promise<{ id: string, titles: Record<string, string> }[]> {
   try {
     const url = `https://www.youtube.com/playlist?list=${playlistId}`;
     
@@ -7,27 +7,52 @@ export async function getLatestVideo(playlistId: string): Promise<{ id: string, 
       fetch(url, { headers: { 'Accept-Language': 'ja-JP,ja;q=0.9' } })
     ]);
 
-    if (!resEn.ok || !resJa.ok) return null;
+    if (!resEn.ok || !resJa.ok) return [];
     
     const htmlEn = await resEn.text();
     const htmlJa = await resJa.text();
     
-    const idMatch = htmlEn.match(/"videoId":"([^"]+)"/);
-    if (!idMatch) return null;
-    const id = idMatch[1];
-
-    const titleMatchEn = htmlEn.match(/"title":\{"runs":\[\{"text":"([^"]+)"\}\]/);
-    const titleMatchJa = htmlJa.match(/"title":\{"runs":\[\{"text":"([^"]+)"\}\]/);
-
-    return {
-      id,
-      titles: {
-        en: titleMatchEn ? titleMatchEn[1].replace(/\\u0026/g, '&') : 'Latest Video',
-        ja: titleMatchJa ? titleMatchJa[1].replace(/\\u0026/g, '&') : 'Latest Video'
+    const extractVideos = (html: string) => {
+      const match = html.match(/var ytInitialData = (\{.*?\});<\/script>/);
+      if (!match) return [];
+      
+      const videos: {id: string, title: string}[] = [];
+      try {
+        const data = JSON.parse(match[1]);
+        
+        const findRenderers = (obj: any) => {
+          if (!obj || typeof obj !== 'object') return;
+          if (obj.playlistVideoRenderer) {
+            const r = obj.playlistVideoRenderer;
+            videos.push({
+              id: r.videoId,
+              title: r.title?.runs?.[0]?.text || 'Video'
+            });
+          }
+          for (const key of Object.keys(obj)) {
+            findRenderers(obj[key]);
+          }
+        };
+        findRenderers(data);
+      } catch (e) {
+        console.error('Error parsing ytInitialData', e);
       }
+      return videos;
     };
+
+    const videosEn = extractVideos(htmlEn);
+    const videosJa = extractVideos(htmlJa);
+    
+    // Zip them together
+    return videosEn.map((v, i) => ({
+      id: v.id,
+      titles: {
+        en: v.title.replace(/\\u0026/g, '&'),
+        ja: videosJa[i] ? videosJa[i].title.replace(/\\u0026/g, '&') : v.title.replace(/\\u0026/g, '&')
+      }
+    }));
   } catch (e) {
     console.error('Failed to fetch YouTube playlist', e);
   }
-  return null;
+  return [];
 }

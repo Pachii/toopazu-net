@@ -21,8 +21,10 @@ export const ui = {
     'project.title': 'topaz pan',
     'project.subtitle': 'An extremely simple stereo vocal widener plugin.',
     'project.github': 'View on GitHub',
-    'tab.main': 'Home',
-    'tab.special': 'Software',
+    'tab.main': 'home',
+    'tab.commission': 'commission',
+    'tab.special': 'software',
+    'previous.works': 'past covers',
   },
   ja: {
     'profile.role': '歌、mix & master',
@@ -40,6 +42,8 @@ export const ui = {
     'project.subtitle': 'とにかくシンプルなステレオ・ボーカルワイドナープラグイン。',
     'project.github': 'GitHubで見る',
     'tab.main': 'ホーム',
+    'tab.commission': 'mix依頼',
     'tab.special': 'ソフトウェア',
+    'previous.works': '歌ってみた一覧',
   },
 } as const;

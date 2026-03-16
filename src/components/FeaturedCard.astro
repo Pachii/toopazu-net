@@ -5,16 +5,19 @@ interface Props {
   url: string;
   badgeText: string;
   badgeI18nKey?: string;
+  videoTitle?: string;
+  videoTitleI18nKey?: string;
 }
 
-const { imageUrl, altText, url, badgeText, badgeI18nKey } = Astro.props;
+const { imageUrl, altText, url, badgeText, badgeI18nKey, videoTitle, videoTitleI18nKey } = Astro.props;
 ---
 <a href={url} target="_blank" rel="noopener noreferrer" class="featured-card">
   <div class="image-wrapper">
     <img src={imageUrl} alt={altText} class="featured-image" />
   </div>
   <div class="caption">
-    <p data-i18n={badgeI18nKey}>{badgeText}</p>
+    <span class="badge" data-i18n={badgeI18nKey}>{badgeText}</span>
+    {videoTitle && <p class="video-title" data-i18n={videoTitleI18nKey}>{videoTitle}</p>}
   </div>
 </a>
 
@@ -49,11 +52,29 @@ const { imageUrl, altText, url, badgeText, badgeI18nKey } = Astro.props;
 
   .caption {
     padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
 
-  .caption p {
-    font-size: 0.85rem;
-    font-weight: 500;
+  .badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-light);
+    letter-spacing: 0.05em;
+  }
+
+  .video-title {
+    font-size: 0.95rem;
+    font-weight: 600;
     color: var(--text-main);
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
 </style>

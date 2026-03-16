@@ -6,28 +6,40 @@ import TabSwitcher from '../components/TabSwitcher.astro';
 import LinkCard from '../components/LinkCard.astro';
 import FeaturedCard from '../components/FeaturedCard.astro';
 import TopazPanCard from '../components/TopazPanCard.astro';
+import CommissionCard from '../components/CommissionCard.astro';
+import PreviousWorksCarousel from '../components/PreviousWorksCarousel.astro';
 
 import { languages, ui } from '../i18n/ui';
 import { profileInfo, socialLinks, cardLinks, featuredData } from '../data/profile';
-import { getLatestVideo } from '../utils/youtube';
+import { getPlaylistVideos } from '../utils/youtube';
 
 // Evaluate initial language (default en) on the server for the first render
 const defaultLang = 'en';
 const t = (key: keyof typeof ui['en']) => ui[defaultLang][key];
 
-const latestVideo = await getLatestVideo('PLBRf9rHBrMc-4bXWqTUBIUfmRRw7Sjzy-');
+const videos = await getPlaylistVideos('PLBRf9rHBrMc-4bXWqTUBIUfmRRw7Sjzy-');
+const latestVideo = videos.length > 0 ? videos[0] : null;
+const previousVideos = videos.length > 1 ? videos.slice(1) : [];
+
 const featuredImage = latestVideo ? `https://img.youtube.com/vi/${latestVideo.id}/maxresdefault.jpg` : featuredData.imageUrl;
 const featuredUrl = latestVideo ? `https://youtube.com/watch?v=${latestVideo.id}` : featuredData.videoUrl;
 
-// Clone ui translations into client dictionaries to inject scraped titles
+// Ensure we don't accidentally overwrite the user's manual "Latest cover" tag
 const clientTranslations = JSON.parse(JSON.stringify(ui));
 if (latestVideo && latestVideo.titles) {
-  clientTranslations.en['featured.badge'] = latestVideo.titles.en || 'Latest cover';
-  if (clientTranslations.ja) clientTranslations.ja['featured.badge'] = latestVideo.titles.ja || '最新の歌ってみた';
+  clientTranslations.en['video.title'] = latestVideo.titles.en;
+  if (clientTranslations.ja) clientTranslations.ja['video.title'] = latestVideo.titles.ja;
 }
 
-const featuredTitle = latestVideo ? clientTranslations[defaultLang]['featured.badge'] : t('featured.badge');
+// Map the previous videos to client translations
+previousVideos.forEach(v => {
+  clientTranslations.en[`video-${v.id}`] = v.titles.en;
+  if (clientTranslations.ja) clientTranslations.ja[`video-${v.id}`] = v.titles.ja;
+});
+
+const featuredTitle = t('featured.badge');
 const featuredI18nKey = 'featured.badge';
+const videoTitle = latestVideo ? clientTranslations[defaultLang]['video.title'] : '';
 ---
 <Layout title="とぱず / topaz">
   <!-- Pass translations to the client -->
@@ -52,40 +64,47 @@ const featuredI18nKey = 'featured.badge';
     window.setLanguage = function(lang, animate = true) {
       if (!translations[lang]) return;
       
-      document.documentElement.lang = lang;
       localStorage.setItem('preferred-language', lang);
       
-      // Replace text with smooth animation
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (translations[lang] && translations[lang][key]) {
-          if (animate) {
-            // Drop down and fade out
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(4px)';
-            el.style.filter = 'blur(2px)';
-            
-            setTimeout(() => {
+      const targetEls = document.querySelectorAll('[data-i18n], .commission-card');
+      
+      if (animate) {
+        targetEls.forEach(el => {
+          el.style.transition = 'opacity 0.15s ease-out, transform 0.15s ease-out, filter 0.15s ease-out';
+          el.style.opacity = '0';
+          el.style.transform = 'translateY(4px)';
+          el.style.filter = 'blur(2px)';
+        });
+        
+        setTimeout(() => {
+          document.documentElement.lang = lang; // CSS based hiding happens here
+          
+          document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (translations[lang] && translations[lang][key]) {
               el.textContent = translations[lang][key];
-              
-              // Teleport slightly above without animation
-              el.style.transition = 'none';
-              el.style.transform = 'translateY(-4px)';
-              
-              // Force browser reflow to apply the instant transform
-              void el.offsetWidth;
-              
-              // Animate back to original natural position
-              el.style.transition = '';
-              el.style.opacity = '1';
-              el.style.transform = 'translateY(0)';
-              el.style.filter = 'blur(0px)';
-            }, 150); // wait for fade out
-          } else {
+            }
+          });
+          
+          targetEls.forEach(el => {
+            el.style.transition = 'none';
+            el.style.transform = 'translateY(-4px)';
+            void el.offsetWidth;
+            el.style.transition = 'opacity 0.15s ease-out, transform 0.15s ease-out, filter 0.15s ease-out';
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+            el.style.filter = 'blur(0px)';
+          });
+        }, 150);
+      } else {
+        document.documentElement.lang = lang;
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.getAttribute('data-i18n');
+          if (translations[lang] && translations[lang][key]) {
             el.textContent = translations[lang][key];
           }
-        }
-      });
+        });
+      }
       
       // Update toggle buttons active state
       document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -109,12 +128,11 @@ const featuredI18nKey = 'featured.badge';
     name={profileInfo.name}
     handle={profileInfo.handle}
     roleText={t('profile.role')}
-    dateText={profileInfo.date}
     avatarUrl={profileInfo.avatarUrl}
   />
   <SocialIconRow links={socialLinks} t={t} />
 
-  <TabSwitcher leftTab={t('tab.main')} rightTab={t('tab.special')} />
+  <TabSwitcher tab1={t('tab.main')} tab2={t('tab.special')} tab3={t('tab.commission')} />
   
   <div class="tabs-content">
     <div id="links-view" class="tab-view">
@@ -124,7 +142,19 @@ const featuredI18nKey = 'featured.badge';
         url={featuredUrl}
         badgeText={featuredTitle}
         badgeI18nKey={featuredI18nKey}
+        videoTitle={videoTitle}
+        videoTitleI18nKey="video.title"
       />
+      <PreviousWorksCarousel 
+        videos={previousVideos}
+        titleI18nKey="previous.works"
+        titleText={t('previous.works')}
+        defaultLang={defaultLang}
+      />
+    </div>
+
+    <div id="commission-view" class="tab-view" style="display: none; opacity: 0; transform: translateY(10px);">
+      <CommissionCard />
     </div>
 
     <div id="projects-view" class="tab-view" style="display: none; opacity: 0; transform: translateY(10px);">

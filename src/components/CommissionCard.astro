@@ -1,0 +1,1631 @@
+---
+import { getLangFromUrl } from "../i18n/utils";
+const lang = getLangFromUrl(Astro.url);
+---
+
+<div class="commission-card">
+  <!-- JAPANESE CONTENT -->
+  <div class="lang-ja" lang="ja">
+    <div class="commission-header">
+      <div class="header-icon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
+          ></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <line x1="10" y1="9" x2="8" y2="9"></line>
+        </svg>
+      </div>
+      <div class="header-titles">
+        <h2 class="title-en">MIX依頼</h2>
+        <p class="title-ja">歌ってみたMIXのご依頼について</p>
+      </div>
+    </div>
+
+    <div class="commission-body">
+      <div class="intro-notice">
+        <p>
+          現在は既存のお客様からのご依頼を優先しているため、料金は少し高めに設定しております。
+          <br /><br />
+          新規の方からのご依頼も受け付けておりますので、ご理解いただける方はお気軽にご相談ください。
+        </p>
+      </div>
+
+      <div class="section">
+        <h3>【基本料金】</h3>
+        <ul>
+          <li>
+            <span class="label">フルコーラス</span><span class="price"
+              ><span class="mono">¥20,000</span></span
+            >
+          </li>
+          <li>
+            <span class="label">ワンコーラス</span><span class="price"
+              ><span class="mono">¥10,000</span></span
+            >
+          </li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h3>【コラボ・合唱料金】</h3>
+        <ul>
+          <li>
+            <span class="label">フルコーラス</span><span class="price"
+              ><span class="mono">¥12,000</span> × 人数</span
+            >
+          </li>
+          <li>
+            <span class="label">ワンコーラス</span><span class="price"
+              ><span class="mono">¥6,000</span> × 人数</span
+            >
+          </li>
+        </ul>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section details-section">
+        <div class="details-header-row">
+          <h3>【作業内容】</h3>
+          <button class="equipment-btn" id="openEquipmentJa">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="equip-icon"
+              ><line x1="4" y1="21" x2="4" y2="14"></line><line
+                x1="4"
+                y1="10"
+                x2="4"
+                y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line
+                x1="12"
+                y1="8"
+                x2="12"
+                y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line
+                x1="20"
+                y1="12"
+                x2="20"
+                y2="3"></line><line x1="2" y1="14" x2="6" y2="14"></line><line
+                x1="10"
+                y1="8"
+                x2="14"
+                y2="8"></line><line x1="18" y1="16" x2="22" y2="16"></line></svg
+            >
+            使用機材
+          </button>
+        </div>
+        <div class="process-steps">
+          <div class="process-step">
+            <div class="step-marker">1</div>
+            <div class="step-content">
+              <strong>ボーカルエディット</strong>
+              <span class="detail-desc"
+                >ピッチ補正 / ノイズ除去（リップノイズ・環境ノイズ等）</span
+              >
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-marker">2</div>
+            <div class="step-content">
+              <strong>ボーカルアライメント</strong>
+              <span class="detail-desc"
+                >ハモリ・ダブルのタイミング補正（VocAlign 等を使用）</span
+              >
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-marker">3</div>
+            <div class="step-content">
+              <strong>EQ / コンプ処理</strong>
+              <span class="detail-desc"
+                >コンプレッサーやEQによる音量・帯域の調整</span
+              >
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-marker">4</div>
+            <div class="step-content">
+              <strong>空間系・特殊エフェクト</strong>
+              <span class="detail-desc"
+                >リバーブ / ディレイ / ラジオボイス など</span
+              >
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-marker">5</div>
+            <div class="step-content">
+              <strong>ハモリ作成</strong>
+              <span class="detail-desc"
+                >メインボーカルから作成（全編 / 一部のみなどご相談ください）</span
+              >
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-marker">6</div>
+            <div class="step-content">
+              <strong>マスタリング</strong>
+              <span class="detail-desc">音圧・質感を整えて最終仕上げ</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-highlights">
+        <div class="highlight-item">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="highlight-icon"
+            ><rect x="2" y="4" width="20" height="16" rx="2" ry="2"
+            ></rect><polygon points="10 9 15 12 10 15 10 9"></polygon></svg
+          >
+          <span
+            ><strong>エンコード無料対応</strong>
+            <span class="highlight-note">（ご希望の方のみ）</span></span
+          >
+        </div>
+        <div class="highlight-item">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="highlight-icon"
+            ><path d="M1 4v6h6"></path><path
+              d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg
+          >
+          <span>リテイク・差し替えは<strong>回数制限なし</strong></span>
+        </div>
+        <p class="note">
+          ※内容によっては納期を調整させていただく場合がございます。
+        </p>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section">
+        <h3>【納期】</h3>
+        <p class="timeline-notice">
+          通常納期は<strong><span class="mono">2</span>週間前後</strong>です
+        </p>
+      </div>
+
+      <div class="section">
+        <h3>【お急ぎ対応】</h3>
+        <ul class="options-list">
+          <li>
+            <span class="label"><span class="mono">1</span>週間以内</span><span
+              class="price"><span class="mono">+ ¥5,000</span></span
+            >
+          </li>
+          <li>
+            <span class="label"><span class="mono">3</span>日以内</span><span
+              class="price"><span class="mono">+ ¥10,000</span></span
+            >
+          </li>
+          <li>
+            <span class="label"><span class="mono">1</span>日以内</span><span
+              class="price"><span class="mono">+ ¥20,000</span></span
+            >
+          </li>
+        </ul>
+        <p class="note">
+          ※すべての素材を受領し、ご依頼確定後から初稿提出までの目安です。
+        </p>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section centered">
+        <h3>【お支払い方法】</h3>
+        <p>
+          お支払いは<strong>PayPal（商品・サービス）</strong
+          >のみ対応しております
+        </p>
+      </div>
+
+      <div class="divider line-divider"></div>
+
+      <div class="message-block">
+        <p>ご質問・ご相談はお気軽にご連絡ください。</p>
+      </div>
+
+      <div class="section">
+        <h3>【ご用意いただくもの】</h3>
+        <div class="guidelines-container">
+          <div class="guideline-block">
+            <div class="guideline-header">
+              <span class="step-num">01</span>
+              <h4>書き出し形式</h4>
+            </div>
+            <p class="guideline-desc">
+              <strong
+                >inst/オケを含むすべてのトラックは、頭出しした状態で書き出してください。</strong
+              >ミックス時にタイミングを正確に合わせるためです。<br />
+              ※提出形式は <strong>.wav</strong> を推奨しています。
+            </p>
+          </div>
+
+          <div class="guideline-block">
+            <div class="guideline-header">
+              <span class="step-num">02</span>
+              <h4>トラックの分け方・ファイル名</h4>
+            </div>
+            <p class="guideline-desc">
+              同時に鳴る箇所は必ず別トラックでご提出ください。メイン、ハモリ、コーラスはそれぞれ分けて書き出しをお願いいたします。<br
+              />
+              <span class="tips-box">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="tip-icon"
+                  ><path
+                    d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.9 1.2 1.5 1.5 2.5"
+                  ></path><path d="M9 18h6"></path><path d="M10 22h4"
+                  ></path></svg
+                >
+                <span
+                  ><strong>【POINT】</strong> メインを <code>m1</code> と <code
+                    >m2</code
+                  >、ハモリを <code>h1_1</code> と <code>h1_2</code> のように分けていただくと、ブレス位置や重なりの処理がしやすくなります。</span
+                >
+              </span>
+            </p>
+          </div>
+
+          <div class="guideline-block">
+            <div class="guideline-header">
+              <span class="step-num">03</span>
+              <h4>データの送付方法</h4>
+            </div>
+            <p class="guideline-desc">
+              ご用意いただいたデータは一つのフォルダにまとめ、アーカイブ形式（<code
+                >.zip</code
+              >, <code>.7z</code>, <code>.rar</code> 等）に圧縮してください。<br
+              />
+              ギガファイル便などのオンラインストレージにアップロードのうえ、ダウンロードURLをお送りください。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>【注意事項】</h3>
+        <ul class="warning-list">
+          <li>
+            録音データの音質に問題がある場合や、ピッチ・リズムの補正が困難と判断した場合は、ご依頼をお受けできないことがございます。
+          </li>
+          <li>
+            ハモリパートは<span class="mono">3</span
+            >トラック目以降、1トラックごとに<span class="mono">+ ¥2,000</span
+            >の追加料金となります。※一部分のみのハモリや合いの手は対象外です。
+          </li>
+          <li>
+            より自然な仕上がりのため、ハモリはご自身で録音いただくことをおすすめしております。ピッチシフト等による擬似ハモリをご希望の場合は、事前にご相談ください。
+          </li>
+        </ul>
+      </div>
+
+      <div class="divider dashed"></div>
+
+      <div class="template-section">
+        <div class="template-header">
+          <p>
+            下記テンプレートをご記入のうえ、録音データとあわせてお送りください。<br
+            />内容を確認後、お見積もりと納期をご案内いたします。
+          </p>
+        </div>
+
+        <div class="code-block">
+          <div class="code-title">
+            【ご依頼テンプレート】 ※改変せずご使用ください
+          </div>
+          <pre><code>楽曲名：
+本家様URL：
+お名前（活動名）：
+
+【ご依頼内容】
+・フル / ワンコーラス：
+・コラボ人数：
+・トラック数（目安）：
+・キー変更の有無：
+
+【ご要望】
+・希望納期：（例：通常 / 1週間以内 など）
+・ハモリについて：
+・備考：
+</code></pre>
+        </div>
+      </div>
+
+      <div class="commission-footer">
+        <p>ご依頼・ご相談はDMにてお待ちしております。</p>
+        <a
+          href="https://twitter.com/toopazu"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="contact-btn"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+            <path
+              d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+            ></path>
+          </svg>
+          <span>XでDMを送る</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENGLISH CONTENT -->
+  <div class="lang-en" lang="en">
+    <div class="commission-header">
+      <div class="header-icon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
+          ></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <line x1="10" y1="9" x2="8" y2="9"></line>
+        </svg>
+      </div>
+      <div class="header-titles">
+        <h2 class="title-en">Mixing Commission</h2>
+        <p class="title-ja">Vocal mixing for covers</p>
+      </div>
+    </div>
+
+    <div class="commission-body">
+      <div class="intro-notice">
+        <p>
+          I mainly focus on my own projects and take on a limited number of
+          mixing requests. Because of this, my rates are set slightly higher - I
+          have opened my commissions to the public for those who are interested
+          in working with me.
+        </p>
+      </div>
+
+      <div class="section">
+        <h3>【Basic Rates】</h3>
+        <ul>
+          <li>
+            <span class="label">Full Song</span><span class="price"
+              ><span class="mono">130 USD</span></span
+            >
+          </li>
+          <li>
+            <span class="label">Short Size</span><span class="price"
+              ><span class="mono">65 USD</span></span
+            >
+          </li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h3>【Collaboration / Chorus】</h3>
+        <ul>
+          <li>
+            <span class="label">Full Song</span><span class="price"
+              ><span class="mono">80 USD</span> × persons</span
+            >
+          </li>
+          <li>
+            <span class="label">Short Size</span><span class="price"
+              ><span class="mono">40 USD</span> × persons</span
+            >
+          </li>
+        </ul>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section details-section">
+        <div class="details-header-row">
+          <h3>【Work Details】</h3>
+          <button class="equipment-btn" id="openEquipmentEn">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="equip-icon"
+              ><line x1="4" y1="21" x2="4" y2="14"></line><line
+                x1="4"
+                y1="10"
+                x2="4"
+                y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line
+                x1="12"
+                y1="8"
+                x2="12"
+                y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line
+                x1="20"
+                y1="12"
+                x2="20"
+                y2="3"></line><line x1="2" y1="14" x2="6" y2="14"></line><line
+                x1="10"
+                y1="8"
+                x2="14"
+                y2="8"></line><line x1="18" y1="16" x2="22" y2="16"></line></svg
+            >
+            Equipment
+          </button>
+        </div>
+        <div class="process-steps">
+          <div class="process-step">
+            <div class="step-marker">1</div>
+            <div class="step-content">
+              <strong>Vocal Editing</strong>
+              <span class="detail-desc"
+                >Pitch correction / audio restoration (de-click, de-noise)</span
+              >
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-marker">2</div>
+            <div class="step-content">
+              <strong>Vocal Alignment</strong>
+              <span class="detail-desc"
+                >Timing correction for harmonies & doubles (e.g., using
+                Vocalign)</span
+              >
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-marker">3</div>
+            <div class="step-content">
+              <strong>Dynamics & EQ</strong>
+              <span class="detail-desc">Compression / frequency balancing</span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-marker">4</div>
+            <div class="step-content">
+              <strong>Spatial & Effects</strong>
+              <span class="detail-desc">Reverb / delay / radio voice, etc.</span
+              >
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-marker">5</div>
+            <div class="step-content">
+              <strong>Harmony Creation</strong>
+              <span class="detail-desc"
+                >Generated from the main melody if needed</span
+              >
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-marker">6</div>
+            <div class="step-content">
+              <strong>Mastering</strong>
+              <span class="detail-desc">Loudness adjustment / final polish</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-highlights">
+        <div class="highlight-item">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="highlight-icon"
+            ><rect x="2" y="4" width="20" height="16" rx="2" ry="2"
+            ></rect><polygon points="10 9 15 12 10 15 10 9"></polygon></svg
+          >
+          <span
+            ><strong>Free</strong> Video Export <span class="highlight-note"
+              >(If requested)</span
+            ></span
+          >
+        </div>
+        <div class="highlight-item">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="highlight-icon"
+            ><path d="M1 4v6h6"></path><path
+              d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg
+          >
+          <span><strong>Unlimited</strong> Revisions & Retakes</span>
+        </div>
+        <p class="note">
+          * Additional time may be required if there are excessive revision or
+          retake requests.
+        </p>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section">
+        <h3>【Delivery Time】</h3>
+        <p class="timeline-notice">
+          Standard delivery is within <strong
+            ><span class="mono">2</span> weeks</strong
+          >
+        </p>
+      </div>
+
+      <div class="section">
+        <h3>【Rush Fees】</h3>
+        <ul class="options-list">
+          <li>
+            <span class="label">Within <span class="mono">1</span> Week</span
+            ><span class="price"><span class="mono">+ 35 USD</span></span>
+          </li>
+          <li>
+            <span class="label">Within <span class="mono">3</span> Days</span
+            ><span class="price"><span class="mono">+ 65 USD</span></span>
+          </li>
+          <li>
+            <span class="label">Within <span class="mono">1</span> Day</span
+            ><span class="price"><span class="mono">+ 130 USD</span></span>
+          </li>
+        </ul>
+        <p class="note">
+          * Option deadlines apply from the time all audio is received and the
+          request is accepted, until the initial rough mix is delivered.
+        </p>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section centered">
+        <h3>【Payment Methods】</h3>
+        <p>
+          Payments are accepted via <strong>PayPal Goods & Services</strong> only.
+        </p>
+      </div>
+
+      <div class="divider line-divider"></div>
+
+      <div class="message-block">
+        <p>
+          Please feel free to contact me for any questions or consultations.
+        </p>
+      </div>
+
+      <div class="section">
+        <h3>【What to Send】</h3>
+        <div class="guidelines-container">
+          <div class="guideline-block">
+            <div class="guideline-header">
+              <span class="step-num">01</span>
+              <h4>File Export & Format</h4>
+            </div>
+            <p class="guideline-desc">
+              Please <strong
+                >export all stems (including the Inst/Karaoke track) starting
+                from the exact same point</strong
+              > at the very beginning of the project. This ensures everything lines
+              up perfectly when imported for mixing.<br />
+              * Submitting files in <strong>.wav</strong> format is highly recommended.
+            </p>
+          </div>
+
+          <div class="guideline-block">
+            <div class="guideline-header">
+              <span class="step-num">02</span>
+              <h4>Track Separation & Naming</h4>
+            </div>
+            <p class="guideline-desc">
+              If voices overlap, please separate them into different tracks.
+              Main vocals, harmonies, and ad-libs must each be exported as their
+              own individual files without blending them together.<br />
+              <span class="tips-box">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="tip-icon"
+                  ><path
+                    d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.9 1.2 1.5 1.5 2.5"
+                  ></path><path d="M9 18h6"></path><path d="M10 22h4"
+                  ></path></svg
+                >
+                <span
+                  ><strong>【Point】</strong> We recommend splitting your recording
+                  tracks! For example, dividing your main vocal into <code
+                    >m1</code
+                  > and <code>m2</code>, or harmony into <code>h1_1</code> and <code
+                    >h1_2</code
+                  >. This makes breathing and overlapping sections much easier
+                  to record.</span
+                >
+              </span>
+            </p>
+          </div>
+
+          <div class="guideline-block">
+            <div class="guideline-header">
+              <span class="step-num">03</span>
+              <h4>Sending Method</h4>
+            </div>
+            <p class="guideline-desc">
+              Please gather all your audio files into a single folder and
+              archive it (<code>.zip</code>, <code>.7z</code>, <code>.rar</code
+              >).<br />
+              Upload the archive using a file-sharing service (like GigaFile, Google
+              Drive, or Dropbox) and send me the download link.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>【Important Notes】</h3>
+        <ul class="warning-list">
+          <li>
+            If the recording quality is exceptionally poor or pitch/rhythm
+            deviation is deemed uncorrectable, the request may be declined.
+          </li>
+          <li>
+            An additional fee of <span class="mono">+ 15 USD</span> applies per track
+            starting from the <span class="mono">3</span>rd harmony track.
+            Partial harmonies or ad-libs are exceptions, so please consult in
+            advance.
+          </li>
+          <li>
+            For the best quality, we highly recommend recording and providing
+            the harmony tracks yourself. If you require artificial harmony
+            generation, please consult in advance.
+          </li>
+        </ul>
+      </div>
+
+      <div class="divider dashed"></div>
+
+      <div class="template-section">
+        <div class="template-header">
+          <p>
+            Please fill out the template below and send it along with your
+            recording data.<br />I will send you a quote once confirmed.
+          </p>
+        </div>
+
+        <div class="code-block">
+          <div class="code-title">
+            【Request Template】 * No alterations/omissions
+          </div>
+          <pre><code>Song Title:
+Original URL:
+Artist Name:
+
+[Details]
+・Size (Full/Short):
+・Collab Size:
+・Track Count (est.):
+・Key Change:
+
+[Preferences]
+・Deadline Plan: (Standard, 1 Week Plan, etc.)
+・About Harmonies:
+・Other Requests:
+</code></pre>
+        </div>
+      </div>
+
+      <div class="commission-footer">
+        <p>I am waiting for your request via DM!</p>
+        <a
+          href="https://twitter.com/toopazu"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="contact-btn"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+            <path
+              d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+            ></path>
+          </svg>
+          <span>Message on X</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- EQUIPMENT MODAL -->
+  <div id="equipmentOverlay" class="equip-overlay">
+    <div id="equipmentModal" class="equip-modal">
+      <div class="equip-modal-content">
+        <div class="equip-modal-header">
+          <h3 class="lang-ja" lang="ja">使用機材・ソフトウェア</h3>
+          <h3 class="lang-en" lang="en">Equipment & Tools</h3>
+          <button id="closeEquipmentModal" class="close-modal-btn">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><line x1="18" y1="6" x2="6" y2="18"></line><line
+                x1="6"
+                y1="6"
+                x2="18"
+                y2="18"></line></svg
+            >
+          </button>
+        </div>
+
+        <div class="equip-modal-body">
+          <div class="equip-group">
+            <h4>
+              <span class="lang-ja" lang="ja">ハードウェア</span>
+              <span class="lang-en" lang="en">Hardware</span>
+            </h4>
+            <ul class="equip-list">
+              <li>
+                <span class="equip-label">
+                  <span class="lang-ja" lang="ja"
+                    >オーディオインターフェイス</span
+                  >
+                  <span class="lang-en" lang="en">Audio Interface</span>
+                </span>
+                <span class="equip-value">RME Babyface Pro FS</span>
+              </li>
+              <li>
+                <span class="equip-label">
+                  <span class="lang-ja" lang="ja">モニター環境</span>
+                  <span class="lang-en" lang="en">Headphones/Monitors</span>
+                </span>
+                <span class="equip-value">Slate VSX Immersion One</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="equip-group">
+            <h4>
+              <span class="lang-ja" lang="ja">ソフトウェア</span>
+              <span class="lang-en" lang="en">Software</span>
+            </h4>
+            <ul class="equip-list">
+              <li>
+                <span class="equip-label">
+                  <span class="lang-ja" lang="ja">DTM</span>
+                  <span class="lang-en" lang="en">DAW</span>
+                </span>
+                <span class="equip-value">Studio One Pro 7</span>
+              </li>
+              <li>
+                <span class="equip-label">
+                  <span class="lang-ja" lang="ja">ノイズ処理</span>
+                  <span class="lang-en" lang="en">Audio Restoration</span>
+                </span>
+                <span class="equip-value">iZotope RX 11 Advanced</span>
+              </li>
+              <li>
+                <span class="equip-label">
+                  <span class="lang-ja" lang="ja">ピッチ補正</span>
+                  <span class="lang-en" lang="en">Pitch Correction</span>
+                </span>
+                <span class="equip-value">Melodyne 5 Studio</span>
+              </li>
+              <li>
+                <span class="equip-label">
+                  <span class="lang-ja" lang="ja">ボーカルアライメント</span>
+                  <span class="lang-en" lang="en">Vocal Alignment</span>
+                </span>
+                <span class="equip-value">Vocalign 6 Pro</span>
+              </li>
+              <li>
+                <span class="equip-label">
+                  <span class="lang-ja" lang="ja">ミックス・マスタリング</span>
+                  <span class="lang-en" lang="en">Mixing / Mastering</span>
+                </span>
+                <span class="equip-value">UAD Native, FabFilter, etc.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Global overrides for toggling languages */
+  :global(html[lang="ja"]) .lang-en {
+    display: none !important;
+  }
+  :global(html[lang="en"]) .lang-ja {
+    display: none !important;
+  }
+
+  .commission-card {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    margin-top: 32px;
+  }
+
+  .commission-header {
+    background: linear-gradient(
+      135deg,
+      rgba(120, 189, 212, 0.1) 0%,
+      rgba(120, 189, 212, 0.02) 100%
+    );
+    padding: 24px 24px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  }
+
+  .header-icon {
+    background: #78bdd4;
+    color: white;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(120, 189, 212, 0.3);
+  }
+
+  .header-titles {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .title-en {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--text-main);
+  }
+
+  .title-ja {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-light);
+  }
+
+  .commission-body {
+    padding: 32px 28px;
+    color: var(--text-main);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .intro-notice {
+    background: rgba(120, 189, 212, 0.05);
+    border: 1px dashed rgba(120, 189, 212, 0.3);
+    padding: 16px 20px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    margin-bottom: 24px;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .feature-highlights {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .highlight-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(
+      to right,
+      rgba(120, 189, 212, 0.1),
+      rgba(120, 189, 212, 0.02)
+    );
+    border-left: 4px solid #78bdd4;
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.95rem;
+    color: var(--text-main);
+  }
+
+  .highlight-icon {
+    width: 20px;
+    height: 20px;
+    color: #78bdd4;
+    flex-shrink: 0;
+  }
+
+  .highlight-item strong {
+    color: #4b8aa1;
+  }
+
+  .highlight-note {
+    font-size: 0.8rem;
+    color: #888;
+    margin-left: 4px;
+  }
+
+  h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #333;
+    display: inline-block;
+  }
+
+  .section {
+    margin-bottom: 24px;
+  }
+
+  .centered {
+    text-align: center;
+    background: #fafafa;
+    padding: 20px;
+    border-radius: 12px;
+    margin: 32px 0;
+  }
+
+  .centered h3 {
+    margin-bottom: 8px;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  }
+
+  li:last-child {
+    border-bottom: none;
+  }
+
+  .label {
+    font-weight: 600;
+  }
+
+  .price {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #78bdd4;
+  }
+
+  .mono {
+    font-family:
+      ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+
+  .details-section {
+    background: #fdfdfd;
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .details-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .details-header-row h3 {
+    margin-bottom: 0;
+  }
+
+  .equipment-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(120, 189, 212, 0.1);
+    color: #4b8aa1;
+    border: 1px solid rgba(120, 189, 212, 0.2);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .equipment-btn:hover {
+    background: rgba(120, 189, 212, 0.2);
+    transform: translateY(-1px);
+  }
+
+  .equip-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .process-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .process-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    position: relative;
+  }
+
+  .process-step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: 13px;
+    top: 32px;
+    bottom: -12px;
+    width: 2px;
+    background: rgba(120, 189, 212, 0.2);
+    z-index: 1;
+  }
+
+  .step-marker {
+    background: #78bdd4;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-family:
+      ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    flex-shrink: 0;
+    z-index: 2;
+    box-shadow: 0 0 0 4px #fdfdfd;
+  }
+
+  .step-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-top: 4px;
+  }
+
+  .step-content strong {
+    font-size: 0.95rem;
+    color: #333;
+    line-height: 1.2;
+  }
+
+  .detail-desc {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    line-height: 1.4;
+  }
+
+  .timeline-notice {
+    font-size: 1.05rem;
+    text-align: center;
+    padding: 16px;
+    background: #f4f6f8;
+    border-radius: 8px;
+    letter-spacing: 0.05em;
+  }
+
+  .timeline-notice strong {
+    color: #78bdd4;
+    font-size: 1.15rem;
+  }
+
+  .note {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-top: 12px;
+    line-height: 1.5;
+    padding-left: 12px;
+    position: relative;
+  }
+
+  .note::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #ccc;
+  }
+
+  .message-block {
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #444;
+    margin: 32px 0;
+  }
+
+  .guidelines-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 12px;
+  }
+
+  .guideline-block {
+    background: #fdfdfd;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    padding: 20px;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .guideline-block:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    border-color: rgba(120, 189, 212, 0.2);
+  }
+
+  .guideline-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .step-num {
+    background: rgba(120, 189, 212, 0.15);
+    color: #4b8aa1;
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-family:
+      ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+  }
+
+  .guideline-header h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .guideline-desc {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    line-height: 1.6;
+    margin: 0;
+    padding-left: 40px;
+  }
+
+  .tips-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: rgba(120, 189, 212, 0.06);
+    border: 1px dashed rgba(120, 189, 212, 0.3);
+    border-radius: 8px;
+    padding: 14px;
+    margin-top: 14px;
+    font-size: 0.85rem;
+    color: #5a7b8c;
+    line-height: 1.5;
+  }
+
+  .tips-box strong {
+    color: #4b8aa1;
+  }
+
+  .tip-icon {
+    width: 18px;
+    height: 18px;
+    color: #78bdd4;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .tips-box code {
+    background: rgb(255, 255, 255);
+    border: 1px solid rgba(120, 189, 212, 0.2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family:
+      ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-weight: 600;
+    color: #4b8aa1;
+    font-size: 0.8rem;
+  }
+
+  .warning-list {
+    background: rgba(220, 53, 69, 0.04);
+    border: 1px solid rgba(220, 53, 69, 0.15);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 12px;
+    list-style: none;
+    counter-reset: warning-counter;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .warning-list > li {
+    position: relative;
+    padding: 0 0 0 28px !important;
+    margin: 0 !important;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    line-height: 1.6;
+    display: block !important;
+    border: none !important;
+  }
+
+  .warning-list > li::before {
+    counter-increment: warning-counter;
+    content: counter(warning-counter) ".";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #e57373;
+    font-weight: 700;
+    font-family:
+      ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.95rem;
+  }
+
+  .divider {
+    height: 4px;
+    background: #f0f0f0;
+    border-radius: 2px;
+    margin: 40px auto;
+    width: 40px;
+  }
+
+  .line-divider {
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(0, 0, 0, 0.06),
+      transparent
+    );
+  }
+
+  .dashed {
+    height: 1px;
+    width: 100%;
+    background: none;
+    border-top: 2px dashed #ebebeb;
+  }
+
+  .template-section {
+    background: #282c34;
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 24px;
+    color: #abb2bf;
+  }
+
+  .template-header {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: #e5c07b;
+    font-weight: 600;
+  }
+
+  .code-block {
+    background: #1e2227;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .code-title {
+    background: #3e4451;
+    color: white;
+    font-size: 0.75rem;
+    padding: 6px 12px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  pre {
+    margin: 0;
+    padding: 16px;
+    overflow-x: auto;
+    font-family:
+      ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  code {
+    color: #98c379;
+  }
+
+  .encoder-note {
+    font-size: 0.8rem;
+    text-align: center;
+    margin-top: 20px;
+    color: #61afef;
+  }
+
+  .commission-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 48px;
+  }
+
+  .commission-footer p {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text-main);
+  }
+
+  .contact-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #000;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .contact-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+</style>
+
+<style is:global>
+  /* MODAL STYLES — global because the overlay is moved to document.body via JS
+     to escape any ancestor transform/opacity that would break position:fixed */
+  .equip-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .equip-overlay.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .equip-modal {
+    border: none;
+    border-radius: 16px;
+    padding: 0;
+    width: 90%;
+    max-width: 500px;
+    background: transparent;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+      transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .equip-overlay.is-visible .equip-modal {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .equip-modal-content {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .equip-modal-header {
+    background: #f8fbfc;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(120, 189, 212, 0.15);
+  }
+
+  .equip-modal-header h3 {
+    margin: 0;
+    color: #333;
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  .close-modal-btn {
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .close-modal-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #333;
+  }
+
+  .close-modal-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .equip-modal-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .equip-group h4 {
+    margin: 0 0 12px 0;
+    font-size: 0.9rem;
+    color: #78bdd4;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .equip-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .equip-list li {
+    padding: 12px 0;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.08);
+  }
+
+  .equip-list li:last-child {
+    border-bottom: none;
+  }
+
+  .equip-label {
+    font-weight: 600;
+    color: #555;
+    font-size: 0.9rem;
+  }
+
+  .equip-value {
+    font-family:
+      ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    color: #333;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: right;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const overlay = document.getElementById("equipmentOverlay");
+    const btns = document.querySelectorAll(".equipment-btn");
+    const btnClose = document.getElementById("closeEquipmentModal");
+
+    if (!overlay) return;
+
+    // Move the overlay to document.body to escape any ancestor transform
+    // (the tab-switcher applies transform to the commission-view container,
+    // which breaks position:fixed for descendants)
+    document.body.appendChild(overlay);
+
+    const openModal = () => {
+      overlay.classList.add("is-visible");
+      document.body.style.overflow = "hidden";
+    };
+
+    const closeModal = () => {
+      overlay.classList.remove("is-visible");
+      document.body.style.overflow = "";
+    };
+
+    btns.forEach((btn) => btn.addEventListener("click", openModal));
+    if (btnClose) btnClose.addEventListener("click", closeModal);
+
+    // Close on overlay/backdrop click
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) closeModal();
+    });
+
+    // Close on Escape key
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && overlay.classList.contains("is-visible")) {
+        closeModal();
+      }
+    });
+  });
+</script>

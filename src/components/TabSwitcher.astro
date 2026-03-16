@@ -1,17 +1,21 @@
 ---
 interface Props {
-  leftTab: string;
-  rightTab: string;
+  tab1: string;
+  tab2: string;
+  tab3: string;
 }
-const { leftTab, rightTab } = Astro.props;
+const { tab1, tab2, tab3 } = Astro.props;
 ---
 <div class="tab-switcher-container">
   <div class="tab-switcher">
     <button class="tab-btn active" data-target="links-view">
-      <span data-i18n="tab.main">{leftTab}</span>
+      <span data-i18n="tab.main">{tab1}</span>
     </button>
     <button class="tab-btn" data-target="projects-view">
-      <span data-i18n="tab.special">{rightTab}</span>
+      <span data-i18n="tab.special">{tab2}</span>
+    </button>
+    <button class="tab-btn" data-target="commission-view">
+      <span data-i18n="tab.commission">{tab3}</span>
     </button>
     <div class="tab-slider"></div>
   </div>
@@ -31,11 +35,12 @@ const { leftTab, rightTab } = Astro.props;
     border-radius: 24px;
     padding: 4px;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
-    width: 260px; /* Fixed width prevents jittering */
+    width: 360px; /* Gives more room for English strings */
+    max-width: 90vw;
   }
 
   .tab-btn {
-    flex: 1; /* Both buttons always take up EXACTLY 50% */
+    flex: 1; /* Both buttons always take up EXACTLY 33.333% */
     position: relative;
     z-index: 2;
     padding: 0;
@@ -60,7 +65,7 @@ const { leftTab, rightTab } = Astro.props;
     top: 4px;
     left: 4px;
     height: calc(100% - 8px);
-    width: calc(50% - 4px); /* Exact half of the pill width minus padding */
+    width: calc(33.333% - 2.66px); /* 1/3 minus padding adjustments */
     background: #fff;
     border-radius: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -68,10 +73,10 @@ const { leftTab, rightTab } = Astro.props;
     z-index: 1;
   }
 
-  /* When the second button is active, slide the background to the right */
-  .tab-switcher.right-active .tab-slider {
-    transform: translateX(100%);
-  }
+  /* Slider positions */
+  .tab-switcher.pos-0 .tab-slider { transform: translateX(0); }
+  .tab-switcher.pos-1 .tab-slider { transform: translateX(100%); }
+  .tab-switcher.pos-2 .tab-slider { transform: translateX(200%); }
 </style>
 
 <script>
@@ -81,18 +86,59 @@ const { leftTab, rightTab } = Astro.props;
     const views = {
       'links-view': document.getElementById('links-view'),
       'projects-view': document.getElementById('projects-view'),
+      'commission-view': document.getElementById('commission-view'),
     };
 
     if (!switcher) return;
 
+    // Helper: Determine URL path for a view
+    function getPathForView(target: string) {
+      if (target === 'projects-view') return '/software';
+      if (target === 'commission-view') return '/commission';
+      return '/'; // links-view
+    }
+
+    // Initialize based on URL
+    const pathname = window.location.pathname.replace(/\/$/, ''); // Remove trailing slash
+    let initialTarget = 'links-view';
+    
+    if (pathname.endsWith('/software') || pathname.endsWith('/pan')) {
+      initialTarget = 'projects-view';
+    } else if (pathname.endsWith('/commission')) {
+      initialTarget = 'commission-view';
+    }
+
+    // Set initial view immediately (no animation)
+    btns.forEach((btn, index) => {
+      const htmlBtn = btn as HTMLElement;
+      if (htmlBtn.dataset.target === initialTarget) {
+        switcher.classList.remove('pos-0');
+        switcher.classList.add(`pos-${index}`);
+        btns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        Object.entries(views).forEach(([id, element]) => {
+          if (element) {
+            if (id === initialTarget) {
+              element.style.display = 'block';
+              element.style.opacity = '1';
+              element.style.transform = 'translateY(0)';
+            } else {
+              element.style.opacity = '0';
+              element.style.transform = 'translateY(10px)';
+              element.style.display = 'none';
+            }
+          }
+        });
+      }
+    });
+
+    // Handle clicks
     btns.forEach((btn, index) => {
       btn.addEventListener('click', (e) => {
         // Update slider position
-        if (index === 1) {
-          switcher.classList.add('right-active');
-        } else {
-          switcher.classList.remove('right-active');
-        }
+        switcher.classList.remove('pos-0', 'pos-1', 'pos-2');
+        switcher.classList.add(`pos-${index}`);
 
         // Update button active states
         btns.forEach(b => b.classList.remove('active'));
@@ -105,7 +151,6 @@ const { leftTab, rightTab } = Astro.props;
           if (element) {
             if (id === target) {
               element.style.display = 'block';
-              // slight delay to allow display block to apply before animating opacity
               setTimeout(() => {
                 element.style.opacity = '1';
                 element.style.transform = 'translateY(0)';
@@ -117,6 +162,57 @@ const { leftTab, rightTab } = Astro.props;
             }
           }
         });
+
+        // Update URL via History API
+        const newPath = getPathForView(target || '');
+        
+        // Preserve language prefix if present (e.g., /en, /ja)
+        const langMatch = window.location.pathname.match(/^(\/[a-z]{2})(?:\/|$)/);
+        const langPrefix = langMatch ? langMatch[1] : '';
+        
+        const fullNewPath = langPrefix + newPath === '' ? '/' : (langPrefix + newPath).replace('//', '/');
+        
+        // Only push if the path actually changes to avoid bloating history
+        if (window.location.pathname !== fullNewPath) {
+          window.history.pushState({ target }, '', fullNewPath);
+        }
+      });
+    });
+
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', (e) => {
+      const pathname = window.location.pathname.replace(/\/$/, '');
+      let popTarget = 'links-view';
+      if (pathname.endsWith('/software') || pathname.endsWith('/pan')) {
+        popTarget = 'projects-view';
+      } else if (pathname.endsWith('/commission')) {
+        popTarget = 'commission-view';
+      }
+
+      btns.forEach((btn, index) => {
+        const htmlBtn = btn as HTMLElement;
+        if (htmlBtn.dataset.target === popTarget) {
+          switcher.classList.remove('pos-0', 'pos-1', 'pos-2');
+          switcher.classList.add(`pos-${index}`);
+          btns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          Object.entries(views).forEach(([id, element]) => {
+            if (element) {
+              if (id === popTarget) {
+                element.style.display = 'block';
+                setTimeout(() => {
+                  element.style.opacity = '1';
+                  element.style.transform = 'translateY(0)';
+                }, 10);
+              } else {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(10px)';
+                element.style.display = 'none';
+              }
+            }
+          });
+        }
       });
     });
   }

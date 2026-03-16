@@ -6,11 +6,10 @@ interface Props {
   name: string;
   handle: string;
   roleText: string;
-  dateText: string;
   avatarUrl: string;
 }
 
-const { name, handle, roleText, dateText, avatarUrl } = Astro.props;
+const { name, handle, roleText, avatarUrl } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const projectUrl = `/${lang}/projects/topaz-pan`;
 ---
@@ -26,7 +25,6 @@ const projectUrl = `/${lang}/projects/topaz-pan`;
     <div class="role-wrapper">
       <p class="role" data-i18n="profile.role">{roleText}</p>
     </div>
-    <p class="date">{dateText}</p>
   </div>
 </header>
 
