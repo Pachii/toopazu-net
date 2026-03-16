@@ -4,6 +4,10 @@ export interface PlaylistVideo {
   authors: Record<string, string>;
 }
 
+function decodeYoutubeText(value: string) {
+  return value.replace(/\\u0026/g, '&').trim();
+}
+
 export async function getPlaylistVideos(playlistId: string): Promise<PlaylistVideo[]> {
   try {
     const url = `https://www.youtube.com/playlist?list=${playlistId}`;
@@ -54,12 +58,12 @@ export async function getPlaylistVideos(playlistId: string): Promise<PlaylistVid
     return videosEn.map((v, i) => ({
       id: v.id,
       titles: {
-        en: v.title.replace(/\\u0026/g, '&'),
-        ja: videosJa[i] ? videosJa[i].title.replace(/\\u0026/g, '&') : v.title.replace(/\\u0026/g, '&')
+        en: decodeYoutubeText(v.title),
+        ja: videosJa[i] ? decodeYoutubeText(videosJa[i].title) : decodeYoutubeText(v.title)
       },
       authors: {
-        en: v.author.replace(/\\u0026/g, '&'),
-        ja: videosJa[i] ? videosJa[i].author.replace(/\\u0026/g, '&') : v.author.replace(/\\u0026/g, '&')
+        en: decodeYoutubeText(v.author),
+        ja: videosJa[i] ? decodeYoutubeText(videosJa[i].author) : decodeYoutubeText(v.author)
       }
     }));
   } catch (e) {

@@ -45,7 +45,7 @@ export const ui = {
     'project.github': 'GitHubで見る',
     'tab.main': 'ホーム',
     'tab.commission': 'mix依頼',
-    'tab.special': 'ソフトウェア',
+    'tab.special': 'ソフト',
     'previous.works': '歌ってみた一覧',
     'mixed.works': '過去担当作品',
     'mixed.note': 'これまでにMIXを担当させていただいた作品の一部です。',
