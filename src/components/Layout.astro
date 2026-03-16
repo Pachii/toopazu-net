@@ -1,18 +1,20 @@
 ---
-import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { getHtmlLang, getLangFromUrl } from '../i18n/utils';
 import { languages } from '../i18n/ui';
 import '../styles/global.css';
 import LanguageToggle from './LanguageToggle.astro';
+import type { AppLang } from '../i18n/utils';
 
 interface Props {
   title: string;
+  currentLang?: AppLang;
 }
 
-const { title } = Astro.props;
-const lang = getLangFromUrl(Astro.url);
+const { title, currentLang } = Astro.props;
+const lang = currentLang ?? getLangFromUrl(Astro.url);
 ---
 <!doctype html>
-<html lang={lang}>
+<html lang={getHtmlLang(lang)}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

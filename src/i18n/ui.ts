@@ -1,6 +1,6 @@
 export const languages = {
   en: 'English',
-  ja: '日本語',
+  jp: '日本語',
 };
 
 export const defaultLang = 'en';
@@ -26,7 +26,7 @@ export const ui = {
     'tab.special': 'software',
     'previous.works': 'past covers',
   },
-  ja: {
+  jp: {
     'profile.role': '歌、mix & master',
     'title.youtube': 'YouTube',
     'title.niconico': 'ニコニコ動画',

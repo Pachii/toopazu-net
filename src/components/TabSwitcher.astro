@@ -3,18 +3,21 @@ interface Props {
   tab1: string;
   tab2: string;
   tab3: string;
+  initialTarget?: 'links-view' | 'projects-view' | 'commission-view';
 }
-const { tab1, tab2, tab3 } = Astro.props;
+const { tab1, tab2, tab3, initialTarget = 'links-view' } = Astro.props;
+const initialIndex =
+  initialTarget === 'projects-view' ? 1 : initialTarget === 'commission-view' ? 2 : 0;
 ---
 <div class="tab-switcher-container">
-  <div class="tab-switcher">
-    <button class="tab-btn active" data-target="links-view">
+  <div class={`tab-switcher pos-${initialIndex}`}>
+    <button class={`tab-btn ${initialTarget === 'links-view' ? 'active' : ''}`} data-target="links-view">
       <span data-i18n="tab.main">{tab1}</span>
     </button>
-    <button class="tab-btn" data-target="projects-view">
+    <button class={`tab-btn ${initialTarget === 'projects-view' ? 'active' : ''}`} data-target="projects-view">
       <span data-i18n="tab.special">{tab2}</span>
     </button>
-    <button class="tab-btn" data-target="commission-view">
+    <button class={`tab-btn ${initialTarget === 'commission-view' ? 'active' : ''}`} data-target="commission-view">
       <span data-i18n="tab.commission">{tab3}</span>
     </button>
     <div class="tab-slider"></div>
@@ -166,11 +169,13 @@ const { tab1, tab2, tab3 } = Astro.props;
         // Update URL via History API
         const newPath = getPathForView(target || '');
         
-        // Preserve language prefix if present (e.g., /en, /ja)
+        // Preserve language prefix if present (e.g., /en, /jp)
         const langMatch = window.location.pathname.match(/^(\/[a-z]{2})(?:\/|$)/);
         const langPrefix = langMatch ? langMatch[1] : '';
-        
-        const fullNewPath = langPrefix + newPath === '' ? '/' : (langPrefix + newPath).replace('//', '/');
+
+        const fullNewPath = `${langPrefix}${newPath}`
+          .replace(/\/{2,}/g, '/')
+          .replace(/\/$/, '') || '/';
         
         // Only push if the path actually changes to avoid bloating history
         if (window.location.pathname !== fullNewPath) {

@@ -1,5 +1,5 @@
 ---
-const target = '/software';
+const fallbackTarget = '/en/software';
 ---
 
 <!doctype html>
@@ -8,13 +8,19 @@ const target = '/software';
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Redirecting...</title>
-    <meta http-equiv="refresh" content={`0;url=${target}`} />
-    <link rel="canonical" href={target} />
-    <script is:inline define:vars={{ target }}>
+    <meta http-equiv="refresh" content={`0;url=${fallbackTarget}`} />
+    <link rel="canonical" href={fallbackTarget} />
+    <script is:inline define:vars={{ fallbackTarget }}>
+      const savedLang = localStorage.getItem('preferred-language');
+      const browserLang = navigator.language || navigator.userLanguage || '';
+      const normalized = (savedLang || browserLang).toLowerCase();
+      const target = normalized.startsWith('ja') || normalized.startsWith('jp')
+        ? '/jp/software'
+        : '/en/software';
       window.location.replace(target);
     </script>
   </head>
   <body>
-    <p>Redirecting to <a href={target}>{target}</a>...</p>
+    <p>Redirecting to <a href={fallbackTarget}>{fallbackTarget}</a>...</p>
   </body>
 </html>

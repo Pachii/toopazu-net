@@ -13,7 +13,8 @@ const { currentLang, languages } = Astro.props;
         class={`lang-btn ${currentLang === langCode ? 'active' : ''}`}
         aria-label={`Switch to ${langName}`}
         data-lang={langCode}
-        onclick={`window.setLanguage('${langCode}')`}
+        type="button"
+        onclick={`window.switchLanguageRoute('${langCode}')`}
       >
         {langCode.toUpperCase()}
       </button>
