@@ -1,15 +1,15 @@
 /software /index.html 200
 /commission /index.html 200
-/pan /index.html 200
+/pan /software 301
 
 /en/software /en/index.html 200
 /en/commission /en/index.html 200
-/en/pan /en/index.html 200
+/en/pan /en/software 301
 
 /ja/software /ja/index.html 200
 /ja/commission /ja/index.html 200
-/ja/pan /ja/index.html 200
+/ja/pan /ja/software 301
 
 /ko/software /ko/index.html 200
 /ko/commission /ko/index.html 200
-/ko/pan /ko/index.html 200
+/ko/pan /ko/software 301
