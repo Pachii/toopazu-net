@@ -1,0 +1,33 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" rx="48" fill="url(#bg)"/>
+  <rect x="74" y="86" width="1132" height="548" rx="36" fill="url(#panel)" fill-opacity="0.84"/>
+  <rect x="108" y="132" width="1064" height="456" rx="28" stroke="rgba(255,255,255,0.36)" stroke-width="2"/>
+  <circle cx="640" cy="360" r="86" fill="url(#core)"/>
+  <circle cx="402" cy="360" r="54" fill="url(#orb)"/>
+  <circle cx="878" cy="360" r="54" fill="url(#orb)"/>
+  <path d="M248 360C344 286.667 466.667 286.667 616 360C466.667 433.333 344 433.333 248 360Z" stroke="rgba(255,255,255,0.7)" stroke-width="2"/>
+  <path d="M1032 360C936 286.667 813.333 286.667 664 360C813.333 433.333 936 433.333 1032 360Z" stroke="rgba(255,255,255,0.7)" stroke-width="2"/>
+  <rect x="118" y="150" width="200" height="18" rx="9" fill="rgba(255,255,255,0.4)"/>
+  <rect x="118" y="184" width="280" height="12" rx="6" fill="rgba(255,255,255,0.22)"/>
+  <rect x="932" y="524" width="188" height="40" rx="20" fill="rgba(255,255,255,0.22)"/>
+  <defs>
+    <linearGradient id="bg" x1="142" y1="76" x2="1170" y2="676" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5F90A2"/>
+      <stop offset="1" stop-color="#90C8D4"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="640" y1="86" x2="640" y2="634" gradientUnits="userSpaceOnUse">
+      <stop stop-color="white" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="white" stop-opacity="0.06"/>
+    </linearGradient>
+    <radialGradient id="core" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(640 360) rotate(90) scale(86)">
+      <stop stop-color="white"/>
+      <stop offset="0.68" stop-color="white" stop-opacity="0.24"/>
+      <stop offset="1" stop-color="white" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="orb" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(0 0) scale(54)">
+      <stop stop-color="white"/>
+      <stop offset="0.72" stop-color="white" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="white" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>

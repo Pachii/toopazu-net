@@ -1,0 +1,179 @@
+---
+interface Props {
+  variant?: 'card' | 'hero';
+}
+
+const { variant = 'card' } = Astro.props;
+---
+<div class={`stereo-graphic ${variant}`}>
+  <div class="stereo-grid" aria-hidden="true"></div>
+  <div class="stereo-center-line" aria-hidden="true"></div>
+  <div class="stereo-orb stereo-orb-left" aria-hidden="true"></div>
+  <div class="stereo-orb stereo-orb-right" aria-hidden="true"></div>
+  <div class="stereo-core" aria-hidden="true"></div>
+  <div class="stereo-wave stereo-wave-left" aria-hidden="true"></div>
+  <div class="stereo-wave stereo-wave-right" aria-hidden="true"></div>
+</div>
+
+<style>
+  .stereo-graphic {
+    position: relative;
+    overflow: hidden;
+    border-radius: 26px;
+    background:
+      radial-gradient(circle at 50% 18%, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0) 50%),
+      linear-gradient(140deg, rgba(98, 156, 176, 0.92), rgba(137, 196, 212, 0.75));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  }
+
+  .stereo-graphic.card {
+    min-height: 176px;
+  }
+
+  .stereo-graphic.hero {
+    min-height: 212px;
+    border-radius: 30px;
+  }
+
+  .stereo-grid,
+  .stereo-center-line,
+  .stereo-wave,
+  .stereo-orb,
+  .stereo-core {
+    position: absolute;
+  }
+
+  .stereo-grid {
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    background-size: 100% 36px, 36px 100%;
+    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.88), transparent);
+    -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.88), transparent);
+  }
+
+  .stereo-center-line {
+    left: 50%;
+    top: 18%;
+    bottom: 18%;
+    width: 1px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0));
+    transform: translateX(-50%);
+  }
+
+  .stereo-wave {
+    top: 50%;
+    width: 38%;
+    height: 68px;
+    border: 1px solid rgba(255, 255, 255, 0.42);
+    border-radius: 999px;
+    transform: translateY(-50%);
+    opacity: 0.9;
+  }
+
+  .stereo-wave-left {
+    left: 9%;
+    clip-path: inset(0 44% 0 0 round 999px);
+  }
+
+  .stereo-wave-right {
+    right: 9%;
+    clip-path: inset(0 0 0 44% round 999px);
+  }
+
+  .stereo-orb {
+    top: 50%;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.08) 72%, rgba(255, 255, 255, 0) 100%);
+    box-shadow: 0 0 34px rgba(255, 255, 255, 0.25);
+    transform: translateY(-50%);
+  }
+
+  .stereo-orb-left {
+    left: 20%;
+  }
+
+  .stereo-orb-right {
+    right: 20%;
+  }
+
+  .stereo-core {
+    left: 50%;
+    top: 50%;
+    width: 82px;
+    height: 82px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.2) 58%, rgba(255, 255, 255, 0.04) 75%, rgba(255, 255, 255, 0) 100%);
+    transform: translate(-50%, -50%);
+    box-shadow: 0 18px 44px rgba(39, 84, 105, 0.22);
+  }
+
+  :global(.topaz-pan-shell:hover) .stereo-orb-left,
+  :global(.topaz-pan-shell.is-open) .stereo-orb-left {
+    animation: orbit-left 2.6s ease-in-out infinite alternate;
+  }
+
+  :global(.topaz-pan-shell:hover) .stereo-orb-right,
+  :global(.topaz-pan-shell.is-open) .stereo-orb-right {
+    animation: orbit-right 2.6s ease-in-out infinite alternate;
+  }
+
+  :global(.topaz-pan-shell:hover) .stereo-wave-left,
+  :global(.topaz-pan-shell.is-open) .stereo-wave-left {
+    animation: wave-left 2.6s ease-in-out infinite alternate;
+  }
+
+  :global(.topaz-pan-shell:hover) .stereo-wave-right,
+  :global(.topaz-pan-shell.is-open) .stereo-wave-right {
+    animation: wave-right 2.6s ease-in-out infinite alternate;
+  }
+
+  @keyframes orbit-left {
+    from { transform: translateY(-50%) translateX(0); }
+    to { transform: translateY(-50%) translateX(-18px); }
+  }
+
+  @keyframes orbit-right {
+    from { transform: translateY(-50%) translateX(0); }
+    to { transform: translateY(-50%) translateX(18px); }
+  }
+
+  @keyframes wave-left {
+    from { transform: translateY(-50%) scaleX(1); opacity: 0.72; }
+    to { transform: translateY(-50%) scaleX(1.08); opacity: 1; }
+  }
+
+  @keyframes wave-right {
+    from { transform: translateY(-50%) scaleX(1); opacity: 0.72; }
+    to { transform: translateY(-50%) scaleX(1.08); opacity: 1; }
+  }
+
+  @media (max-width: 640px) {
+    .stereo-graphic.card {
+      min-height: 148px;
+    }
+
+    .stereo-graphic.hero {
+      min-height: 180px;
+      border-radius: 24px;
+    }
+
+    .stereo-wave {
+      height: 56px;
+    }
+
+    .stereo-orb {
+      width: 46px;
+      height: 46px;
+    }
+
+    .stereo-core {
+      width: 70px;
+      height: 70px;
+    }
+  }
+</style>

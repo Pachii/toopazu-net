@@ -1,0 +1,1169 @@
+---
+import { existsSync, readdirSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
+import { topazPanAssets } from '../data/topazPan';
+import TrackToggle from './TrackToggle.astro';
+import PluginToggle from './PluginToggle.astro';
+import { ui } from '../i18n/ui';
+import type { AppLang } from '../i18n/utils';
+
+interface Props {
+  lang: AppLang;
+}
+
+const { lang } = Astro.props;
+const t = (key: keyof typeof ui['en']) => ui[lang][key];
+const publicDir = fileURLToPath(new URL('../../public', import.meta.url));
+const demoDir = join(publicDir, 'topaz-pan-demo');
+const videoFileName = readdirSync(demoDir).find(fileName => /\.(mp4|webm)$/i.test(fileName)) ?? null;
+const hasVideo = videoFileName ? existsSync(join(demoDir, videoFileName)) : false;
+const hasAudio = [
+  'instrumental.wav',
+  'main-vocal.wav',
+  'harmony-original.wav',
+  'harmony-topaz-pan.wav',
+].every(fileName => existsSync(join(demoDir, fileName)));
+
+const demoConfig = {
+  hasVideo,
+  hasAudio,
+  initialOffset: 106,
+  assets: {
+    ...topazPanAssets,
+    video: hasVideo ? `/topaz-pan-demo/${videoFileName}` : topazPanAssets.video,
+  },
+};
+---
+<section class="pan-section">
+  <div class="pan-section-header">
+    <p class="pan-section-kicker" data-i18n="project.demo.eyebrow">{t('project.demo.eyebrow')}</p>
+    <h3 class="pan-section-title" data-i18n="project.demo.title">{t('project.demo.title')}</h3>
+    <p class="pan-section-body" data-i18n="project.demo.body">
+      {t('project.demo.body')}
+    </p>
+  </div>
+
+  <div
+    class={`pan-demo-shell ${hasAudio ? '' : 'is-disabled'} ${hasVideo ? 'has-video' : 'has-poster'}`}
+    data-topaz-demo
+    data-initial-status={hasAudio ? 'idle' : 'error'}
+    tabindex="0"
+  >
+    <div class="pan-demo-stage" data-plugin-enabled="false" data-playing="false">
+      {hasVideo ? (
+        <video
+          class="pan-demo-video"
+          data-demo-video
+          src={demoConfig.assets.video}
+          poster={topazPanAssets.poster}
+          muted
+          playsinline
+          preload="metadata"
+        ></video>
+      ) : (
+        <div class="pan-demo-poster" data-demo-fallback>
+          <img src={topazPanAssets.poster} alt="topaz pan demo poster" loading="lazy" />
+        </div>
+      )}
+
+      <button
+        type="button"
+        class="pan-demo-stage-toggle"
+        data-demo-stage-toggle
+        aria-label={t('project.demo.play')}
+      >
+        <span class="pan-demo-stage-toggle-icon" aria-hidden="true"></span>
+      </button>
+
+      <div class="pan-demo-player-bar">
+        <button
+          type="button"
+          class="pan-demo-play"
+          data-demo-play
+          aria-label={t('project.demo.play')}
+        >
+          <span class="pan-demo-play-icon" aria-hidden="true">
+            <span class="pan-demo-play-triangle"></span>
+            <span class="pan-demo-pause-icon"></span>
+          </span>
+        </button>
+
+        <div class="pan-demo-progress-wrap">
+          <input
+            type="range"
+            class="pan-demo-progress"
+            data-demo-progress
+            min="0"
+            max="1000"
+            step="1"
+            value="0"
+            aria-label={t('project.demo.seek')}
+          />
+
+          <div class="pan-demo-time">
+            <span data-demo-current>0:00</span>
+            <span class="pan-demo-time-separator" aria-hidden="true">/</span>
+            <span data-demo-duration>0:00</span>
+          </div>
+        </div>
+
+        <div class="pan-demo-volume">
+          <svg class="pan-demo-volume-icon" aria-hidden="true" viewBox="0 0 20 20" fill="none">
+            <path d="M3.5 11.8H6.3L10.1 15V5L6.3 8.2H3.5V11.8Z" fill="currentColor"></path>
+            <path d="M12.6 8.1C13.55 8.75 14.1 9.8 14.1 10.95C14.1 12.1 13.55 13.15 12.6 13.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+            <path d="M14.65 6.4C16.05 7.45 16.9 9.15 16.9 10.95C16.9 12.75 16.05 14.45 14.65 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+          </svg>
+          <input
+            type="range"
+            class="pan-demo-volume-slider"
+            data-demo-volume
+            min="0"
+            max="100"
+            step="1"
+            value="50"
+            aria-label={t('project.demo.volume')}
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="pan-demo-toolbar">
+      <div class="pan-demo-control-block">
+        <p class="pan-demo-label" data-i18n="project.demo.tracks">{t('project.demo.tracks')}</p>
+        <div class="pan-demo-track-row">
+          <TrackToggle
+            trackId="instrumental"
+            label={t('project.demo.track.instrumental')}
+            i18nKey="project.demo.track.instrumental"
+            checked={false}
+          />
+          <TrackToggle
+            trackId="main"
+            label={t('project.demo.track.main')}
+            i18nKey="project.demo.track.main"
+            checked={true}
+          />
+          <TrackToggle
+            trackId="harmony"
+            label={t('project.demo.track.harmony')}
+            i18nKey="project.demo.track.harmony"
+            checked={true}
+          />
+        </div>
+      </div>
+
+      <div class="pan-demo-control-block pan-demo-plugin-block">
+        <p class="pan-demo-label" data-i18n="project.demo.plugin">{t('project.demo.plugin')}</p>
+        <PluginToggle offLabel={t('project.demo.plugin.off')} onLabel={t('project.demo.plugin.on')} />
+      </div>
+    </div>
+
+    <div class="pan-demo-footer">
+      <p class="pan-demo-status" data-demo-status data-i18n={hasAudio ? 'project.demo.status.idle' : 'project.demo.status.error'}>
+        {hasAudio ? t('project.demo.status.idle') : t('project.demo.status.error')}
+      </p>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  .pan-section-body {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: var(--text-main);
+    max-width: none;
+  }
+
+  .pan-demo-shell {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 18px;
+    position: relative;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.16));
+    border: 1px solid rgba(121, 180, 201, 0.16);
+    border-radius: 26px;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.28),
+      0 16px 32px rgba(121, 180, 201, 0.08);
+  }
+
+  .pan-demo-shell:focus-visible {
+    outline: 2px solid rgba(95, 144, 162, 0.42);
+    outline-offset: 10px;
+  }
+
+  .pan-demo-shell.is-disabled {
+    opacity: 0.82;
+  }
+
+  .pan-demo-stage {
+    position: relative;
+    min-height: 312px;
+    overflow: hidden;
+    border-radius: 24px;
+    background:
+      radial-gradient(circle at 50% 18%, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0) 46%),
+      linear-gradient(145deg, rgba(99, 152, 173, 0.92), rgba(146, 201, 217, 0.82));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.24), 0 12px 24px rgba(121, 180, 201, 0.12);
+  }
+
+  .pan-demo-video,
+  .pan-demo-poster,
+  .pan-demo-poster img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .pan-demo-video,
+  .pan-demo-poster {
+    position: absolute;
+    inset: 0;
+    object-fit: cover;
+  }
+
+  .pan-demo-stage-toggle {
+    position: absolute;
+    inset: 0 0 86px;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    background: none;
+    border: 0;
+    transition: opacity 0.22s ease;
+  }
+
+  .pan-demo-stage-toggle-icon {
+    width: 74px;
+    height: 74px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.24);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 12px 28px rgba(63, 101, 118, 0.18);
+    position: relative;
+    display: grid;
+    place-items: center;
+    transition: transform 0.22s ease, background-color 0.22s ease, opacity 0.22s ease;
+  }
+
+  .pan-demo-stage-toggle-icon::before {
+    content: '';
+    width: 0;
+    height: 0;
+    border-top: 11px solid transparent;
+    border-bottom: 11px solid transparent;
+    border-left: 18px solid #ffffff;
+    transform: translateX(3px);
+  }
+
+  .pan-demo-stage-toggle:hover .pan-demo-stage-toggle-icon {
+    transform: scale(1.03);
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .pan-demo-stage[data-playing='true'] .pan-demo-stage-toggle-icon {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  .pan-demo-player-bar {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    z-index: 3;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 14px;
+    align-items: center;
+    padding: 12px 14px;
+    border-radius: 18px;
+    background: linear-gradient(180deg, rgba(76, 121, 141, 0.24), rgba(255, 255, 255, 0.2));
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 12px 28px rgba(63, 101, 118, 0.14);
+  }
+
+  .pan-demo-play {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: inline-grid;
+    place-items: center;
+    background: rgba(255, 255, 255, 0.9);
+    color: #4e7180;
+    box-shadow: 0 10px 20px rgba(95, 144, 162, 0.12);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+  }
+
+  .pan-demo-play:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px rgba(95, 144, 162, 0.16);
+  }
+
+  .pan-demo-play[disabled] {
+    opacity: 0.56;
+    cursor: default;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .pan-demo-play-icon {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    display: grid;
+    place-items: center;
+    line-height: 0;
+  }
+
+  .pan-demo-play-triangle {
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+    border-left: 12px solid currentColor;
+    transform: translateX(1px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+  }
+
+  .pan-demo-pause-icon {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: scale(0.88);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+  }
+
+  .pan-demo-pause-icon::before,
+  .pan-demo-pause-icon::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    bottom: 1px;
+    width: 4px;
+    border-radius: 999px;
+    background: currentColor;
+  }
+
+  .pan-demo-pause-icon::before {
+    left: 3px;
+  }
+
+  .pan-demo-pause-icon::after {
+    right: 3px;
+  }
+
+  .pan-demo-play.is-playing .pan-demo-play-triangle {
+    opacity: 0;
+    transform: scale(0.84);
+  }
+
+  .pan-demo-play.is-playing .pan-demo-pause-icon {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .pan-demo-progress-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .pan-demo-volume {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .pan-demo-volume-icon {
+    width: 18px;
+    height: 18px;
+    color: rgba(255, 255, 255, 0.9);
+    flex: 0 0 auto;
+  }
+
+  .pan-demo-volume-slider {
+    width: 84px;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .pan-demo-volume-slider::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.55);
+  }
+
+  .pan-demo-volume-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 10px;
+    height: 10px;
+    margin-top: -3px;
+    border-radius: 50%;
+    border: 0;
+    background: #ffffff;
+  }
+
+  .pan-demo-volume-slider::-moz-range-track {
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.55);
+  }
+
+  .pan-demo-volume-slider::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 0;
+    background: #ffffff;
+  }
+
+  .pan-demo-volume-slider:disabled {
+    cursor: default;
+    opacity: 0.56;
+  }
+
+  .pan-demo-progress {
+    width: 100%;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .pan-demo-progress::-webkit-slider-runnable-track {
+    height: 5px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.44));
+  }
+
+  .pan-demo-progress::-webkit-slider-thumb {
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    margin-top: -4px;
+    border-radius: 50%;
+    border: 0;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(95, 144, 162, 0.16);
+  }
+
+  .pan-demo-progress::-moz-range-track {
+    height: 5px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.44));
+  }
+
+  .pan-demo-progress::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 0;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(95, 144, 162, 0.16);
+  }
+
+  .pan-demo-progress:disabled {
+    cursor: default;
+    opacity: 0.56;
+  }
+
+  .pan-demo-time {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    margin: 0;
+    font-size: 0.75rem;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.94);
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pan-demo-time-separator {
+    opacity: 0.68;
+  }
+
+  .pan-demo-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 14px 18px;
+    padding: 4px 2px 0;
+  }
+
+  .pan-demo-control-block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .pan-demo-plugin-block {
+    align-items: flex-start;
+  }
+
+  .pan-demo-label {
+    margin: 0;
+    font-size: 0.74rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #6b9aac;
+    font-weight: 700;
+  }
+
+  .pan-demo-track-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .pan-demo-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px 18px;
+    padding-top: 2px;
+  }
+
+  .pan-demo-status {
+    margin: 0;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: var(--text-light);
+  }
+
+  @media (max-width: 720px) {
+    .pan-demo-stage {
+      min-height: 236px;
+      border-radius: 20px;
+    }
+
+    .pan-demo-stage-toggle {
+      inset: 0 0 94px;
+    }
+
+    .pan-demo-stage-toggle-icon {
+      width: 60px;
+      height: 60px;
+    }
+
+    .pan-demo-player-bar {
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 12px;
+    }
+
+    .pan-demo-play {
+      width: 40px;
+      height: 40px;
+    }
+
+    .pan-demo-progress-wrap {
+      gap: 10px;
+    }
+
+    .pan-demo-volume {
+      justify-content: flex-start;
+    }
+
+    .pan-demo-time {
+      justify-content: flex-start;
+    }
+
+    .pan-demo-toolbar,
+    .pan-demo-footer {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+</style>
+
+<script is:inline define:vars={{ demoConfig }}>
+  class TopazPanDemoController {
+    constructor(root, config) {
+      this.root = root;
+      this.config = config;
+      this.audioContext = null;
+      this.buffers = null;
+      this.trackLevelState = {
+        instrumental: 0,
+        main: 0,
+        harmony: 0,
+      };
+      this.masterGain = null;
+      this.gains = null;
+      this.sources = null;
+      this.startedAt = 0;
+      this.pauseOffset = config.initialOffset || 0;
+      this.duration = 0;
+      this.isPlaying = false;
+      this.isLoaded = false;
+      this.isLoading = false;
+      this.isScrubbing = false;
+      this.resumeAfterScrub = false;
+      this.volume = 0.5;
+      this.trackEnabled = {
+        instrumental: false,
+        main: true,
+        harmony: true,
+      };
+      this.pluginEnabled = false;
+      this.monitorId = 0;
+      this.video = root.querySelector('[data-demo-video]');
+      this.stage = root.querySelector('.pan-demo-stage');
+      this.status = root.querySelector('[data-demo-status]');
+      this.playButton = root.querySelector('[data-demo-play]');
+      this.stageToggle = root.querySelector('[data-demo-stage-toggle]');
+      this.progress = root.querySelector('[data-demo-progress]');
+      this.volumeControl = root.querySelector('[data-demo-volume]');
+      this.currentTimeEl = root.querySelector('[data-demo-current]');
+      this.durationEl = root.querySelector('[data-demo-duration]');
+      this.trackButtons = Array.from(root.querySelectorAll('[data-track-toggle]'));
+      this.pluginToggle = root.querySelector('[data-plugin-toggle]');
+      this.pluginButtons = Array.from(root.querySelectorAll('[data-plugin-state]'));
+      this.statusKey = root.dataset.initialStatus || 'idle';
+
+      this.root.dataset.loaded = 'false';
+      this.bindEvents();
+      this.updateTimeUi();
+      this.updateTrackLevels();
+      this.updateUi();
+      this.syncVideoPreview();
+      this.observeVisibility();
+    }
+
+    bindEvents() {
+      const handleTogglePlay = () => {
+        if (!this.config.hasAudio || this.isLoading) return;
+        if (this.isPlaying) {
+          this.pause();
+        } else {
+          this.play();
+        }
+      };
+
+      if (this.playButton) {
+        this.playButton.addEventListener('click', handleTogglePlay);
+      }
+
+      if (this.stageToggle) {
+        this.stageToggle.addEventListener('click', handleTogglePlay);
+      }
+
+      this.root.addEventListener('keydown', event => {
+        if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+        if (event.target === this.volumeControl) return;
+        event.preventDefault();
+        this.stepSeek(event.key === 'ArrowRight' ? 5 : -5);
+      });
+
+      if (this.progress) {
+        const beginScrub = () => {
+          if (this.isScrubbing) return;
+          this.isScrubbing = true;
+          this.resumeAfterScrub = this.isPlaying;
+          if (this.isPlaying) {
+            this.pause(false);
+          }
+        };
+
+        const finishScrub = () => {
+          if (!this.isScrubbing) return;
+          this.isScrubbing = false;
+          const nextTime = (Number(this.progress.value) / 1000) * (this.duration || 0);
+          this.previewTime(nextTime);
+          const shouldResume = this.resumeAfterScrub;
+          this.resumeAfterScrub = false;
+          if (shouldResume) {
+            this.play();
+          } else {
+            this.updateUi();
+          }
+        };
+
+        this.progress.addEventListener('pointerdown', beginScrub);
+        this.progress.addEventListener('input', event => {
+          if (!this.duration) return;
+          beginScrub();
+          const nextTime = (Number(event.target.value) / 1000) * this.duration;
+          this.previewTime(nextTime);
+        });
+        this.progress.addEventListener('change', finishScrub);
+        document.addEventListener('pointerup', finishScrub);
+      }
+
+      if (this.volumeControl) {
+        this.volumeControl.addEventListener('input', event => {
+          this.volume = Number(event.target.value) / 100;
+          if (this.masterGain && this.audioContext) {
+            const now = this.audioContext.currentTime;
+            this.masterGain.gain.cancelScheduledValues(now);
+            this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now);
+            this.masterGain.gain.linearRampToValueAtTime(this.volume, now + 0.04);
+          }
+        });
+      }
+
+      if (this.video) {
+        this.video.addEventListener('loadedmetadata', () => this.syncVideoPreview());
+      }
+
+      document.addEventListener('topaz-pan-close', () => {
+        if (this.isPlaying) {
+          this.pause(false);
+        }
+      });
+
+      this.trackButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const track = button.dataset.track;
+          if (!track) return;
+          this.trackEnabled[track] = !this.trackEnabled[track];
+          this.applyMix(false);
+          this.updateUi();
+        });
+      });
+
+      this.pluginButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const nextState = button.dataset.pluginState === 'on';
+          if (this.pluginEnabled === nextState) return;
+          this.pluginEnabled = nextState;
+          this.applyMix(false);
+          this.updateUi();
+        });
+      });
+
+      document.addEventListener('app-language-change', () => {
+        this.updateUi();
+        this.setStatus(this.statusKey);
+      });
+    }
+
+    observeVisibility() {
+      if (!this.config.hasAudio || !('IntersectionObserver' in window)) return;
+      const observer = new IntersectionObserver(entries => {
+        const entry = entries[0];
+        if (entry && entry.isIntersecting) {
+          this.ensureLoaded();
+          observer.disconnect();
+        }
+      }, { threshold: 0.2 });
+
+      observer.observe(this.root);
+    }
+
+    async ensureLoaded() {
+      if (!this.config.hasAudio || this.isLoaded || this.isLoading) return;
+      this.isLoading = true;
+      this.setStatus('loading');
+      this.updateUi();
+
+      try {
+        this.audioContext = this.audioContext || new (window.AudioContext || window.webkitAudioContext)();
+        const loadTrack = async (url) => {
+          const response = await fetch(url);
+          if (!response.ok) throw new Error(`Failed to load ${url}`);
+          const arrayBuffer = await response.arrayBuffer();
+          return await this.audioContext.decodeAudioData(arrayBuffer);
+        };
+
+        const [instrumental, mainVocal, harmonyOriginal, harmonyProcessed] = await Promise.all([
+          loadTrack(this.config.assets.tracks.instrumental),
+          loadTrack(this.config.assets.tracks.mainVocal),
+          loadTrack(this.config.assets.tracks.harmonyOriginal),
+          loadTrack(this.config.assets.tracks.harmonyProcessed),
+        ]);
+
+        this.buffers = { instrumental, mainVocal, harmonyOriginal, harmonyProcessed };
+        this.duration = Math.max(
+          instrumental.duration,
+          mainVocal.duration,
+          harmonyOriginal.duration,
+          harmonyProcessed.duration
+        );
+        this.pauseOffset = Math.min(this.pauseOffset, this.duration);
+
+        this.masterGain = this.audioContext.createGain();
+        this.masterGain.gain.setValueAtTime(this.volume, this.audioContext.currentTime);
+        this.masterGain.connect(this.audioContext.destination);
+
+        this.gains = {
+          instrumental: this.audioContext.createGain(),
+          main: this.audioContext.createGain(),
+          harmonyOriginal: this.audioContext.createGain(),
+          harmonyProcessed: this.audioContext.createGain(),
+        };
+
+        Object.values(this.gains).forEach(gain => gain.connect(this.masterGain));
+        this.applyMix(true);
+        this.isLoaded = true;
+        this.root.dataset.loaded = 'true';
+        this.setStatus('ready');
+        this.syncVideoPreview();
+        this.updateTimeUi();
+        this.updateTrackLevels();
+      } catch (error) {
+        console.error(error);
+        this.setStatus('error');
+      } finally {
+        this.isLoading = false;
+        this.updateUi();
+      }
+    }
+
+    createSource(buffer, gainNode, offset) {
+      const source = this.audioContext.createBufferSource();
+      source.buffer = buffer;
+      source.connect(gainNode);
+      source.start(0, offset);
+      return source;
+    }
+
+    buildSources(offset) {
+      if (!this.buffers || !this.gains) return;
+      this.sources = {
+        instrumental: this.createSource(this.buffers.instrumental, this.gains.instrumental, offset),
+        main: this.createSource(this.buffers.mainVocal, this.gains.main, offset),
+        harmonyOriginal: this.createSource(this.buffers.harmonyOriginal, this.gains.harmonyOriginal, offset),
+        harmonyProcessed: this.createSource(this.buffers.harmonyProcessed, this.gains.harmonyProcessed, offset),
+      };
+    }
+
+    stopSources() {
+      if (!this.sources) return;
+      Object.values(this.sources).forEach(source => {
+        try {
+          source.stop();
+        } catch (error) {
+          console.error(error);
+        }
+      });
+      this.sources = null;
+    }
+
+    getPlaybackTime() {
+      if (!this.audioContext) return this.pauseOffset;
+      if (!this.isPlaying) return this.pauseOffset;
+      return this.pauseOffset + (this.audioContext.currentTime - this.startedAt);
+    }
+
+    formatTime(seconds) {
+      const safeSeconds = Math.max(0, Math.floor(seconds || 0));
+      const minutes = Math.floor(safeSeconds / 60);
+      const remainingSeconds = safeSeconds % 60;
+      return `${minutes}:${String(remainingSeconds).padStart(2, '0')}`;
+    }
+
+    updateTimeUi(currentTime = this.getPlaybackTime()) {
+      const safeTime = Math.min(Math.max(currentTime, 0), this.duration || currentTime || 0);
+
+      if (this.currentTimeEl) {
+        this.currentTimeEl.textContent = this.formatTime(safeTime);
+      }
+
+      if (this.durationEl) {
+        this.durationEl.textContent = this.formatTime(this.duration);
+      }
+
+      if (this.progress) {
+        const ratio = this.duration ? safeTime / this.duration : 0;
+        this.progress.value = String(Math.round(ratio * 1000));
+      }
+    }
+
+    getTrackLevel(buffer, time) {
+      if (!buffer) return 0;
+      const channelData = buffer.getChannelData(0);
+      if (!channelData?.length || !buffer.sampleRate) return 0;
+
+      const center = Math.min(channelData.length - 1, Math.max(0, Math.floor(time * buffer.sampleRate)));
+      const windowSize = Math.max(256, Math.floor(buffer.sampleRate * 0.035));
+      const start = Math.max(0, center - Math.floor(windowSize / 2));
+      const end = Math.min(channelData.length, start + windowSize);
+
+      let peak = 0;
+      for (let index = start; index < end; index += 24) {
+        const sample = Math.abs(channelData[index]);
+        if (sample > peak) peak = sample;
+      }
+
+      if (peak > 0.13) return 3;
+      if (peak > 0.055) return 2;
+      if (peak > 0.018) return 1;
+      return 0;
+    }
+
+    updateTrackLevels(currentTime = this.getPlaybackTime()) {
+      if (!this.buffers) {
+        this.trackLevelState.instrumental = 0;
+        this.trackLevelState.main = 0;
+        this.trackLevelState.harmony = 0;
+      } else {
+        this.trackLevelState.instrumental = this.getTrackLevel(this.buffers.instrumental, currentTime);
+        this.trackLevelState.main = this.getTrackLevel(this.buffers.mainVocal, currentTime);
+        const harmonyBuffer = this.pluginEnabled ? this.buffers.harmonyProcessed : this.buffers.harmonyOriginal;
+        this.trackLevelState.harmony = this.getTrackLevel(harmonyBuffer, currentTime);
+      }
+
+      this.trackButtons.forEach(button => {
+        const track = button.dataset.track;
+        if (!track) return;
+        button.dataset.level = String(this.trackLevelState[track] ?? 0);
+      });
+    }
+
+    previewTime(nextTime) {
+      const clampedTime = this.duration ? Math.min(Math.max(nextTime, 0), this.duration) : Math.max(nextTime, 0);
+      this.pauseOffset = clampedTime;
+      this.syncVideoPreview();
+      this.updateTimeUi(clampedTime);
+      this.updateTrackLevels(clampedTime);
+    }
+
+    syncVideoPreview() {
+      if (!this.video) return;
+      this.video.pause();
+
+      if (this.video.readyState >= 1) {
+        try {
+          this.video.currentTime = Math.max(this.pauseOffset, 0);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
+
+    applyMix(immediate = false) {
+      if (!this.gains || !this.audioContext) return;
+      const now = this.audioContext.currentTime;
+      const setGain = (node, value) => {
+        node.gain.cancelScheduledValues(now);
+        if (immediate) {
+          node.gain.setValueAtTime(value, now);
+        } else {
+          node.gain.setValueAtTime(node.gain.value, now);
+          node.gain.linearRampToValueAtTime(value, now + 0.06);
+        }
+      };
+
+      setGain(this.gains.instrumental, this.trackEnabled.instrumental ? 0.92 : 0);
+      setGain(this.gains.main, this.trackEnabled.main ? 1 : 0);
+
+      const harmonyActive = this.trackEnabled.harmony;
+      setGain(this.gains.harmonyOriginal, harmonyActive && !this.pluginEnabled ? 0.82 : 0);
+      setGain(this.gains.harmonyProcessed, harmonyActive && this.pluginEnabled ? 0.82 : 0);
+    }
+
+    async play() {
+      if (!this.config.hasAudio) return;
+      await this.ensureLoaded();
+      if (!this.isLoaded || !this.audioContext) return;
+
+      await this.audioContext.resume();
+      this.stopSources();
+      this.buildSources(this.pauseOffset);
+      this.applyMix(true);
+      this.startedAt = this.audioContext.currentTime;
+      this.isPlaying = true;
+
+      if (this.video) {
+        this.video.currentTime = this.pauseOffset;
+        this.video.play().catch(() => {});
+      }
+
+      this.setStatus('ready');
+      this.updateUi();
+      this.monitorPlayback();
+    }
+
+    pause(reset = false) {
+      if (!this.audioContext) return;
+      if (this.isPlaying) {
+        this.pauseOffset += this.audioContext.currentTime - this.startedAt;
+      }
+
+      this.stopSources();
+      this.isPlaying = false;
+
+      if (reset) {
+        this.pauseOffset = 0;
+      } else if (this.duration) {
+        this.pauseOffset = Math.min(this.pauseOffset, this.duration);
+      }
+
+      if (this.video) {
+        this.video.pause();
+        this.video.currentTime = this.pauseOffset;
+      }
+
+      if (this.monitorId) {
+        cancelAnimationFrame(this.monitorId);
+        this.monitorId = 0;
+      }
+
+      this.updateTimeUi();
+      this.updateTrackLevels();
+      this.updateUi();
+    }
+
+    seek(nextTime) {
+      const clampedTime = this.duration ? Math.min(Math.max(nextTime, 0), this.duration) : Math.max(nextTime, 0);
+      this.pauseOffset = clampedTime;
+
+      if (this.video) {
+        this.video.currentTime = clampedTime;
+      }
+
+      if (this.isPlaying && this.audioContext) {
+        this.stopSources();
+        this.buildSources(clampedTime);
+        this.applyMix(true);
+        this.startedAt = this.audioContext.currentTime;
+
+        if (this.video) {
+          this.video.play().catch(() => {});
+        }
+      }
+
+      this.updateTimeUi(clampedTime);
+      this.updateTrackLevels(clampedTime);
+    }
+
+    stepSeek(delta) {
+      const wasPlaying = this.isPlaying;
+      if (wasPlaying) {
+        this.pause(false);
+      }
+
+      this.seek(this.getPlaybackTime() + delta);
+
+      if (wasPlaying) {
+        this.play();
+      } else {
+        this.updateUi();
+      }
+    }
+
+    monitorPlayback() {
+      if (!this.isPlaying || !this.audioContext) return;
+      const elapsed = this.pauseOffset + (this.audioContext.currentTime - this.startedAt);
+
+      if (this.duration && elapsed >= this.duration) {
+        this.pause(true);
+        this.setStatus('ended');
+        return;
+      }
+
+      if (this.video) {
+        const drift = this.video.currentTime - elapsed;
+        if (Math.abs(drift) > 0.12) {
+          this.video.currentTime = elapsed;
+        }
+      }
+
+      this.updateTimeUi(elapsed);
+      this.updateTrackLevels(elapsed);
+      this.monitorId = requestAnimationFrame(() => this.monitorPlayback());
+    }
+
+    setStatus(statusKey) {
+      if (!this.status) return;
+      this.statusKey = statusKey;
+      const message = this.getTranslation(`project.demo.status.${statusKey}`);
+      this.status.textContent = message || '';
+      this.status.hidden = !message || statusKey === 'ready';
+    }
+
+    getCurrentLang() {
+      const savedLang = localStorage.getItem('preferred-language');
+      if (savedLang === 'jp' || savedLang === 'en') return savedLang;
+      const docLang = document.documentElement.lang;
+      if (docLang === 'ja') return 'jp';
+      return 'en';
+    }
+
+    getTranslation(key) {
+      const lang = this.getCurrentLang();
+      const translations = window.translations || {};
+      return translations[lang]?.[key] || translations.en?.[key] || '';
+    }
+
+    updateUi() {
+      const nextLabel = this.isPlaying
+        ? this.getTranslation('project.demo.pause')
+        : this.getTranslation('project.demo.play');
+
+      if (this.playButton) {
+        this.playButton.classList.toggle('is-playing', this.isPlaying);
+        this.playButton.disabled = !this.config.hasAudio || this.isLoading;
+        this.playButton.setAttribute('aria-label', nextLabel);
+      }
+
+      if (this.stageToggle) {
+        this.stageToggle.disabled = !this.config.hasAudio || this.isLoading;
+        this.stageToggle.setAttribute('aria-label', nextLabel);
+      }
+
+      if (this.progress) {
+        this.progress.disabled = !this.config.hasAudio || this.isLoading || !this.duration;
+      }
+
+      if (this.volumeControl) {
+        this.volumeControl.value = String(Math.round(this.volume * 100));
+        this.volumeControl.disabled = !this.config.hasAudio || this.isLoading;
+      }
+
+      if (this.stage) {
+        this.stage.dataset.playing = this.isPlaying ? 'true' : 'false';
+        this.stage.dataset.pluginEnabled = this.pluginEnabled ? 'true' : 'false';
+      }
+
+      this.trackButtons.forEach(button => {
+        const track = button.dataset.track;
+        const active = track ? this.trackEnabled[track] : false;
+        button.classList.toggle('is-active', active);
+        button.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+
+      this.updateTrackLevels();
+
+      if (this.pluginToggle) {
+        this.pluginToggle.dataset.state = this.pluginEnabled ? 'on' : 'off';
+      }
+
+      this.pluginButtons.forEach(button => {
+        const isActive = (button.dataset.pluginState === 'on') === this.pluginEnabled;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+    }
+  }
+
+  const initializeTopazDemo = () => {
+    document.querySelectorAll('[data-topaz-demo]').forEach(root => {
+      if (!root.dataset.controllerAttached) {
+        root.dataset.controllerAttached = 'true';
+        new TopazPanDemoController(root, demoConfig);
+      }
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeTopazDemo);
+  } else {
+    initializeTopazDemo();
+  }
+</script>

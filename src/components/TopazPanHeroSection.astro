@@ -1,0 +1,217 @@
+---
+import { Icon } from 'astro-icon/components';
+import { topazPanLinks } from '../data/topazPan';
+import { ui } from '../i18n/ui';
+import type { AppLang } from '../i18n/utils';
+
+interface Props {
+  lang: AppLang;
+  version: string;
+}
+
+const { lang, version } = Astro.props;
+const t = (key: keyof typeof ui['en']) => ui[lang][key];
+---
+<div class="topaz-pan-hero">
+  <div class="hero-copy">
+    <div class="hero-head">
+      <div class="hero-title-block">
+        <h2 class="hero-title">
+          <span data-i18n="project.title">{t('project.title')}</span>
+          <span class="hero-title-emoji" aria-hidden="true">🍞</span>
+        </h2>
+      </div>
+
+      <div class="hero-meta">
+        <span class="hero-version">{version}</span>
+        <div class="hero-meta-pills">
+          <span class="hero-meta-pill" data-i18n="project.meta.opensource">{t('project.meta.opensource')}</span>
+          <span class="hero-meta-pill" data-i18n="project.meta.free">{t('project.meta.free')}</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="hero-body" data-i18n="project.hero.body">
+      {t('project.hero.body')}
+    </p>
+
+    <div class="hero-actions">
+      <a href={topazPanLinks.releases} target="_blank" rel="noopener noreferrer" class="hero-button">
+        <Icon name="simple-icons:github" size={16} />
+        <span data-i18n="project.release">{t('project.release')}</span>
+      </a>
+
+      <a href={topazPanLinks.repository} target="_blank" rel="noopener noreferrer" class="hero-link">
+        <span data-i18n="project.github">{t('project.github')}</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .topaz-pan-hero {
+    padding: 0;
+  }
+
+  .hero-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+    width: 100%;
+    max-width: none;
+  }
+
+  .hero-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px 22px;
+  }
+
+  .hero-title-block {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .hero-title {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.32em;
+    flex-wrap: nowrap;
+    margin: 0;
+    font-size: clamp(2.15rem, 3.5vw, 2.7rem);
+    line-height: 0.96;
+    letter-spacing: -0.06em;
+    color: #4b6874;
+    font-weight: 800;
+    width: fit-content;
+    max-width: none;
+    white-space: nowrap;
+  }
+
+  .hero-title-emoji {
+    font-size: 0.56em;
+    line-height: 1;
+    transform: translateY(-0.01em);
+    filter: saturate(0.9);
+  }
+
+  .hero-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    flex: 0 0 auto;
+    padding-top: 4px;
+  }
+
+  .hero-version {
+    margin: 0;
+    color: #5f90a2;
+    font-size: 0.76rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .hero-meta-pills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .hero-meta-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.32);
+    border: 1px solid rgba(121, 180, 201, 0.18);
+    color: #5f90a2;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .hero-body {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.58;
+    color: var(--text-main);
+    max-width: 34ch;
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px 16px;
+  }
+
+  .hero-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 42px;
+    padding: 0 18px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #648fa0, #5a8799);
+    color: #fff;
+    font-size: 0.84rem;
+    font-weight: 700;
+    box-shadow: 0 14px 28px rgba(95, 144, 162, 0.16);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease, background 0.18s ease;
+  }
+
+  .hero-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 15px 28px rgba(95, 144, 162, 0.2);
+    background: linear-gradient(180deg, #5f8a9b, #557f90);
+    filter: saturate(1.03);
+  }
+
+  .hero-link {
+    font-size: 0.84rem;
+    color: #5f90a2;
+    font-weight: 700;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+  }
+
+  @media (max-width: 720px) {
+    .topaz-pan-hero {
+      padding: 0 0 6px;
+    }
+
+    .hero-head {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .hero-body {
+      max-width: none;
+      font-size: 0.96rem;
+    }
+
+    .hero-meta {
+      align-items: flex-start;
+      padding-top: 0;
+    }
+
+    .hero-meta-pills {
+      justify-content: flex-start;
+    }
+
+    .hero-title {
+      white-space: normal;
+    }
+  }
+</style>

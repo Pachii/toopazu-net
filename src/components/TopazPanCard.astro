@@ -1,161 +1,176 @@
 ---
-import { Icon } from 'astro-icon/components';
+import type { AppLang } from '../i18n/utils';
 
 interface Props {
+  lang: AppLang;
   title: string;
   description: string;
-  githubText: string;
   version: string;
 }
 
-const { title, description, githubText, version } = Astro.props;
+const { lang, title, description, version } = Astro.props;
 ---
-<a href="https://github.com/Pachii/topaz-pan" target="_blank" rel="noopener noreferrer" class="plugin-card">
+<button type="button" class="plugin-card" data-topaz-open aria-expanded="false">
   <div class="card-inner">
-    <div class="plugin-header">
-      <h2 class="plugin-title" data-i18n="project.title">{title}</h2>
-      <span class="version">{version}</span>
+    <span class="version">{version}</span>
+
+    <div class="plugin-copy">
+      <h2 class="plugin-title">
+        <span data-i18n="project.title">{title}</span>
+        <span class="plugin-title-emoji" aria-hidden="true">🍞</span>
+      </h2>
+
+      <p class="description" data-i18n="project.subtitle">{description}</p>
     </div>
 
-    <p class="description" data-i18n="project.subtitle">{description}</p>
-
-    <!-- Clean, minimal visual hook for what the plugin does -->
-    <div class="graphic">
-      <div class="slider-row">
-        <div class="line"></div>
-        <div class="thumb left-thumb"></div>
-      </div>
-      <div class="slider-row">
-        <div class="line"></div>
-        <div class="thumb right-thumb"></div>
-      </div>
-    </div>
+    <span class="corner-arrow" aria-hidden="true">
+      <svg viewBox="0 0 20 20" fill="none">
+        <path d="M5 15L15 5" />
+        <path d="M8 5H15V12" />
+      </svg>
+    </span>
   </div>
-  
-  <div class="plugin-footer">
-    <div class="download-hint">
-      <Icon name="simple-icons:github" size={16} />
-      <span data-i18n="project.github">{githubText}</span>
-    </div>
-  </div>
-</a>
+</button>
 
 <style>
   .plugin-card {
-    display: flex;
-    flex-direction: column;
-    background-color: #79b4c9; /* Matching the plugin UI background color */
-    border-radius: var(--border-radius);
+    width: 100%;
+    display: block;
+    text-align: left;
+    background: linear-gradient(180deg, #76aec3, #74abc0);
+    border-radius: 26px;
     color: #ffffff;
-    text-decoration: none;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: var(--card-shadow);
-    font-family: 'Inter', sans-serif;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+    box-shadow: 0 14px 28px rgba(121, 180, 201, 0.14);
     overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    position: relative;
   }
 
   .plugin-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(121, 180, 201, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 18px 30px rgba(121, 180, 201, 0.18);
+  }
+
+  .plugin-card:hover .corner-arrow {
+    transform: translate(2px, -2px);
+    opacity: 1;
+  }
+
+  .plugin-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0));
+    pointer-events: none;
   }
 
   .card-inner {
-    padding: 24px 28px;
-    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 24px 26px 22px;
+    min-height: 220px;
+    position: relative;
+    z-index: 1;
   }
 
-  .plugin-header {
+  .plugin-copy {
     display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 8px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: min(100%, 520px);
   }
 
   .plugin-title {
-    font-size: 1.8rem;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.35em;
+    font-size: clamp(2rem, 4.1vw, 3.3rem);
     font-weight: 800;
-    letter-spacing: -0.05em;
+    letter-spacing: -0.06em;
     margin: 0;
+    line-height: 0.94;
+    flex-wrap: wrap;
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .plugin-title-emoji {
+    font-size: 0.6em;
+    line-height: 1;
+    transform: translateY(-0.02em);
+    filter: saturate(0.88);
   }
 
   .version {
-    font-size: 0.75rem;
-    opacity: 0.8;
-    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
   }
 
   .description {
     font-size: 0.95rem;
     line-height: 1.5;
-    opacity: 0.9;
-    margin-bottom: 32px;
+    opacity: 0.92;
+    margin: 0;
+    max-width: 24ch;
   }
 
-  /* Interactive abstract graphic */
-  .graphic {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    width: 60%;
-    margin: 0 auto 16px auto;
-  }
-
-  .slider-row {
-    position: relative;
-    height: 12px;
-    display: flex;
+  .corner-arrow {
+    display: inline-flex;
     align-items: center;
-  }
-
-  .line {
-    width: 100%;
-    height: 2px;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 1px;
-  }
-
-  .thumb {
+    justify-content: center;
+    width: 20px;
+    height: 20px;
     position: absolute;
-    width: 12px;
-    height: 12px;
-    background: #fff;
-    border-radius: 50%;
-    top: 50%;
-    margin-top: -6px;
-    left: 50%;
-    margin-left: -6px;
-    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    right: 24px;
+    bottom: 24px;
+    opacity: 0.72;
+    transition: transform 0.22s ease, opacity 0.22s ease;
   }
 
-  /* Panning and Haas effect subtle animation on hover */
-  .plugin-card:hover .left-thumb {
-    transform: translateX(-40px);
-  }
-  .plugin-card:hover .right-thumb {
-    transform: translateX(40px);
-    transition-delay: 0.08s;
+  .corner-arrow svg {
+    width: 100%;
+    height: 100%;
   }
 
-  .plugin-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
-    padding: 14px 28px;
-    display: flex;
-    justify-content: flex-end;
-    background: rgba(0, 0, 0, 0.03);
+  .corner-arrow path {
+    stroke: rgba(255, 255, 255, 0.88);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
-  .download-hint {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    opacity: 0.95;
-    transition: opacity 0.2s;
-  }
+  @media (max-width: 640px) {
+    .plugin-card {
+      border-radius: 22px;
+    }
 
-  .plugin-card:hover .download-hint {
-    opacity: 1;
+    .card-inner {
+      padding: 18px;
+      min-height: 0;
+    }
+
+    .description {
+      max-width: none;
+    }
+
+    .corner-arrow {
+      right: 18px;
+      bottom: 18px;
+      width: 18px;
+      height: 18px;
+    }
   }
 </style>

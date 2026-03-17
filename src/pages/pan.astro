@@ -1,5 +1,5 @@
 ---
-const fallbackTarget = '/en/software';
+const fallbackTarget = '/en/pan';
 ---
 
 <!doctype html>
@@ -15,8 +15,8 @@ const fallbackTarget = '/en/software';
       const browserLang = navigator.language || navigator.userLanguage || '';
       const normalized = (savedLang || browserLang).toLowerCase();
       const target = normalized.startsWith('ja') || normalized.startsWith('jp')
-        ? '/jp/software'
-        : '/en/software';
+        ? '/jp/pan'
+        : '/en/pan';
       window.location.replace(target);
     </script>
   </head>

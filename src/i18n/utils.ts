@@ -8,7 +8,8 @@ export function normalizeLang(lang?: string): AppLang {
 }
 
 export function getHtmlLang(lang: AppLang) {
-  return lang === 'jp' ? 'ja' : 'en';
+  if (lang === 'jp') return 'ja';
+  return 'en';
 }
 
 export function getLangFromUrl(url: URL): AppLang {

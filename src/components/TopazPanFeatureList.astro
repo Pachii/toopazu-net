@@ -1,0 +1,118 @@
+---
+import { topazPanFeatureKeys } from '../data/topazPan';
+import { ui } from '../i18n/ui';
+import type { AppLang } from '../i18n/utils';
+
+interface Props {
+  lang: AppLang;
+}
+
+const { lang } = Astro.props;
+const t = (key: keyof typeof ui['en']) => ui[lang][key];
+const featureNumbers = ['01', '02', '03', '04', '05'];
+---
+<section class="pan-section">
+  <div class="pan-section-header">
+    <p class="pan-section-kicker" data-i18n="project.features.eyebrow">{t('project.features.eyebrow')}</p>
+    <h3 class="pan-section-title" data-i18n="project.features.title">{t('project.features.title')}</h3>
+  </div>
+
+  <div class="pan-feature-grid">
+    {topazPanFeatureKeys.map((featureKey, index) => (
+      <article class="pan-feature-card">
+        <span class="pan-feature-index">{featureNumbers[index]}</span>
+        <p class="pan-feature-copy" data-i18n={featureKey}>{t(featureKey)}</p>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .pan-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .pan-section-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .pan-section-kicker {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #6b9aac;
+    font-weight: 700;
+  }
+
+  .pan-section-title {
+    margin: 0;
+    font-size: 1.04rem;
+    line-height: 1.45;
+    color: #4f6f7c;
+    font-weight: 700;
+  }
+
+  .pan-feature-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .pan-feature-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 12px;
+    align-items: start;
+    padding: 16px;
+    border-radius: 20px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.14));
+    border: 1px solid rgba(121, 180, 201, 0.16);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.26),
+      0 12px 24px rgba(121, 180, 201, 0.06);
+  }
+
+  .pan-feature-index {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 24px;
+    padding: 0 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.34);
+    border: 1px solid rgba(121, 180, 201, 0.16);
+    font-size: 0.68rem;
+    line-height: 1;
+    letter-spacing: 0.14em;
+    color: #5f90a2;
+    font-weight: 700;
+  }
+
+  .pan-feature-copy {
+    margin: 0;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: var(--text-main);
+    font-weight: 500;
+  }
+
+  .pan-feature-card:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  @media (max-width: 640px) {
+    .pan-feature-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .pan-feature-card:last-child:nth-child(odd) {
+      grid-column: auto;
+    }
+  }
+</style>

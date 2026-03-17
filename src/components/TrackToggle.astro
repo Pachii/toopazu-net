@@ -1,0 +1,155 @@
+---
+interface Props {
+  trackId: string;
+  label: string;
+  i18nKey: string;
+  checked?: boolean;
+}
+
+const { trackId, label, i18nKey, checked = true } = Astro.props;
+---
+<button
+  type="button"
+  class={`track-toggle ${checked ? 'is-active' : ''}`}
+  data-track-toggle
+  data-track={trackId}
+  data-level="0"
+  aria-pressed={checked ? 'true' : 'false'}
+>
+  <span class="track-toggle-indicator" aria-hidden="true">
+    <span class="track-toggle-core"></span>
+  </span>
+  <span class="track-toggle-label" data-i18n={i18nKey}>{label}</span>
+  <span class="track-toggle-meter" aria-hidden="true">
+    <span class="track-toggle-meter-fill"></span>
+  </span>
+</button>
+
+<style>
+  .track-toggle {
+    display: inline-grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 10px;
+    min-height: 40px;
+    padding: 0 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.62);
+    border: 1px solid rgba(121, 180, 201, 0.14);
+    color: var(--text-main);
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: transform 0.18s ease, border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease;
+  }
+
+  .track-toggle:hover {
+    transform: translateY(-1px);
+  }
+
+  .track-toggle-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(121, 180, 201, 0.16);
+    box-shadow: inset 0 0 0 1px rgba(79, 127, 145, 0.12);
+    transition: background-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+  }
+
+  .track-toggle-core {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(121, 180, 201, 0.34);
+    transition: background-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+  }
+
+  .track-toggle-label {
+    min-width: 0;
+  }
+
+  .track-toggle-meter {
+    position: relative;
+    width: 34px;
+    height: 10px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(121, 180, 201, 0.12);
+    box-shadow: inset 0 0 0 1px rgba(79, 127, 145, 0.08);
+  }
+
+  .track-toggle-meter::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        transparent 0 5px,
+        rgba(255, 255, 255, 0.2) 5px 6px
+      );
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .track-toggle-meter-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #6fbf8d, #a6e6a5);
+    box-shadow: 0 0 14px rgba(121, 200, 149, 0.2);
+    transition: width 0.14s ease, opacity 0.14s ease, box-shadow 0.14s ease, filter 0.14s ease;
+    opacity: 0.12;
+  }
+
+  .track-toggle.is-active {
+    background: rgba(95, 144, 162, 0.1);
+    border-color: rgba(95, 144, 162, 0.24);
+    color: #4e7180;
+  }
+
+  .track-toggle.is-active .track-toggle-indicator {
+    background: rgba(82, 149, 123, 0.18);
+    box-shadow: 0 0 0 6px rgba(82, 149, 123, 0.1);
+  }
+
+  .track-toggle.is-active .track-toggle-core {
+    background: #5fb58a;
+    box-shadow: 0 0 10px rgba(95, 181, 138, 0.22);
+  }
+
+  .track-toggle[data-level='1'] .track-toggle-core,
+  .track-toggle[data-level='2'] .track-toggle-core,
+  .track-toggle[data-level='3'] .track-toggle-core {
+    transform: scale(1.04);
+  }
+
+  .track-toggle[data-level='0'] .track-toggle-meter-fill {
+    width: 0%;
+    opacity: 0.1;
+  }
+
+  .track-toggle[data-level='1'] .track-toggle-meter-fill {
+    width: 34%;
+    opacity: 0.72;
+  }
+
+  .track-toggle[data-level='2'] .track-toggle-meter-fill {
+    width: 68%;
+    opacity: 0.88;
+    box-shadow: 0 0 16px rgba(121, 200, 149, 0.26);
+  }
+
+  .track-toggle[data-level='3'] .track-toggle-meter-fill {
+    width: 100%;
+    opacity: 1;
+    box-shadow: 0 0 20px rgba(140, 218, 157, 0.34);
+    filter: saturate(1.08);
+  }
+
+  .track-toggle:not(.is-active) .track-toggle-meter {
+    opacity: 0.5;
+  }
+</style>

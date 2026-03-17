@@ -4,7 +4,7 @@ import ProfileHeader from './ProfileHeader.astro';
 import SocialIconRow from './SocialIconRow.astro';
 import TabSwitcher from './TabSwitcher.astro';
 import FeaturedCard from './FeaturedCard.astro';
-import TopazPanCard from './TopazPanCard.astro';
+import TopazPanExperience from './TopazPanExperience.astro';
 import CommissionCard from './CommissionCard.astro';
 import PreviousWorksCarousel from './PreviousWorksCarousel.astro';
 import MixedWorksList from './MixedWorksList.astro';
@@ -59,6 +59,7 @@ const initialView = pathname.endsWith('/software') || pathname.endsWith('/pan')
   : pathname.endsWith('/commission')
     ? 'commission-view'
     : 'links-view';
+const initialTopazOpen = pathname.endsWith('/pan');
 const visibleStyle = 'display: block; opacity: 1; transform: translateY(0);';
 const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
 ---
@@ -76,19 +77,21 @@ const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
       }
 
       let view = 'links-view';
+      let projectRoute = 'software';
       if (segments[0] === 'software' || segments[0] === 'pan') {
         view = 'projects-view';
+        projectRoute = segments[0] === 'pan' ? 'pan' : 'software';
       } else if (segments[0] === 'commission') {
         view = 'commission-view';
       }
 
-      return { routeLang, view };
+      return { routeLang, view, projectRoute };
     };
 
-    const buildPath = (view, lang = '') => {
+    const buildPath = (view, lang = '', projectRoute = 'software') => {
       const prefix = lang ? `/${lang}` : '';
       const suffix = view === 'projects-view'
-        ? '/software'
+        ? `/${projectRoute}`
         : view === 'commission-view'
           ? '/commission'
           : '';
@@ -138,6 +141,8 @@ const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
             btn.classList.remove('active');
           }
         });
+
+        document.dispatchEvent(new CustomEvent('app-language-change', { detail: { lang } }));
       };
 
       if (animate) {
@@ -168,10 +173,10 @@ const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
 
     window.switchLanguageRoute = function(nextLang) {
       const lang = normalizeLanguage(nextLang);
-      const { view } = getRouteInfo();
+      const { view, projectRoute } = getRouteInfo();
 
       localStorage.setItem('preferred-language', lang);
-      window.location.pathname = buildPath(view, lang);
+      window.location.pathname = buildPath(view, lang, projectRoute);
     };
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -232,11 +237,12 @@ const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
     </div>
 
     <div id="projects-view" class="tab-view" style={initialView === 'projects-view' ? visibleStyle : hiddenStyle}>
-      <TopazPanCard 
+      <TopazPanExperience
+        lang={serverLang}
         title={t('project.title')} 
         description={t('project.subtitle')} 
         version={topazPanVersion}
-        githubText={t('project.github')} 
+        initialOpen={initialTopazOpen}
       />
     </div>
   </div>

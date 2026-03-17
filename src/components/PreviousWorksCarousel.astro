@@ -22,7 +22,7 @@ const { videos, titleI18nKey, titleText, defaultLang } = Astro.props;
               <img src={`https://img.youtube.com/vi/${v.id}/maxresdefault.jpg`} alt="Cover" loading="lazy" />
             </div>
             <div class="item-footer">
-              <p class="item-title" data-i18n={`video-${v.id}`}>{v.titles[defaultLang]}</p>
+              <p class="item-title" data-i18n={`video-${v.id}`}>{v.titles[defaultLang] || v.titles.en || v.titles.ja}</p>
             </div>
           </a>
         ))}
