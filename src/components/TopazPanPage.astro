@@ -1,7 +1,6 @@
 ---
 import { Icon } from 'astro-icon/components';
 import TopazPanHeroSection from './TopazPanHeroSection.astro';
-import TopazPanFeatureList from './TopazPanFeatureList.astro';
 import TopazPanDemoPlayer from './TopazPanDemoPlayer.astro';
 import { ui } from '../i18n/ui';
 import type { AppLang } from '../i18n/utils';
@@ -30,7 +29,19 @@ const t = (key: keyof typeof ui['en']) => ui[lang][key];
         <p class="pan-section-kicker" data-i18n="project.concept.eyebrow">{t('project.concept.eyebrow')}</p>
         <h3 class="pan-section-title" data-i18n="project.concept.title">{t('project.concept.title')}</h3>
       </div>
-      <p class="pan-copy" data-i18n="project.concept.body">{t('project.concept.body')}</p>
+      <p class="pan-copy">
+        <span data-i18n="project.concept.body.before">{t('project.concept.body.before')}</span>
+        <a
+          class="pan-inline-link"
+          href="https://youtu.be/pwHqy9cKi7c?t=2587"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-i18n="project.concept.body.link"
+        >
+          {t('project.concept.body.link')}
+        </a>
+        <span data-i18n="project.concept.body.after">{t('project.concept.body.after')}</span>
+      </p>
     </section>
 
     <section class="pan-section panel-surface">
@@ -40,10 +51,6 @@ const t = (key: keyof typeof ui['en']) => ui[lang][key];
       </div>
       <p class="pan-copy" data-i18n="project.why.body">{t('project.why.body')}</p>
     </section>
-  </div>
-
-  <div class="topaz-pan-rail">
-    <TopazPanFeatureList lang={lang} />
   </div>
 
   <div class="topaz-pan-demo-rail">
@@ -112,6 +119,29 @@ const t = (key: keyof typeof ui['en']) => ui[lang][key];
     gap: 16px;
   }
 
+  .pan-section-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .pan-section-kicker {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #6b9aac;
+    font-weight: 700;
+  }
+
+  .pan-section-title {
+    margin: 0;
+    font-size: 1.04rem;
+    line-height: 1.45;
+    color: #4f6f7c;
+    font-weight: 700;
+  }
+
   .panel-surface {
     padding: 18px 18px 20px;
     border-radius: 22px;
@@ -127,6 +157,21 @@ const t = (key: keyof typeof ui['en']) => ui[lang][key];
     font-size: 0.9rem;
     line-height: 1.65;
     color: var(--text-main);
+  }
+
+  .pan-inline-link {
+    color: #1f6fd6;
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-color: rgba(31, 111, 214, 0.72);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 0.18em;
+    transition: color 0.18s ease, text-decoration-color 0.18s ease;
+  }
+
+  .pan-inline-link:hover {
+    color: #1658ae;
+    text-decoration-color: rgba(22, 88, 174, 0.88);
   }
 
   @media (max-width: 720px) {

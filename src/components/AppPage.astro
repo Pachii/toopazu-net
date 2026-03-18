@@ -5,6 +5,7 @@ import SocialIconRow from './SocialIconRow.astro';
 import TabSwitcher from './TabSwitcher.astro';
 import FeaturedCard from './FeaturedCard.astro';
 import TopazPanExperience from './TopazPanExperience.astro';
+import DamVisionExperience from './DamVisionExperience.astro';
 import CommissionCard from './CommissionCard.astro';
 import PreviousWorksCarousel from './PreviousWorksCarousel.astro';
 import MixedWorksList from './MixedWorksList.astro';
@@ -54,12 +55,13 @@ const featuredTitle = t('featured.badge');
 const featuredI18nKey = 'featured.badge';
 const videoTitle = latestVideo ? clientTranslations[serverLang]['video.title'] : '';
 const pathname = Astro.url.pathname.replace(/\/$/, '');
-const initialView = pathname.endsWith('/software') || pathname.endsWith('/pan')
+const initialView = pathname.endsWith('/software') || pathname.endsWith('/pan') || pathname.endsWith('/dam-vision')
   ? 'projects-view'
   : pathname.endsWith('/commission')
     ? 'commission-view'
     : 'links-view';
 const initialTopazOpen = pathname.endsWith('/pan');
+const initialDamOpen = pathname.endsWith('/dam-vision');
 const visibleStyle = 'display: block; opacity: 1; transform: translateY(0);';
 const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
 ---
@@ -78,9 +80,13 @@ const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
 
       let view = 'links-view';
       let projectRoute = 'software';
-      if (segments[0] === 'software' || segments[0] === 'pan') {
+      if (segments[0] === 'software' || segments[0] === 'pan' || segments[0] === 'dam-vision') {
         view = 'projects-view';
-        projectRoute = segments[0] === 'pan' ? 'pan' : 'software';
+        projectRoute = segments[0] === 'pan'
+          ? 'pan'
+          : segments[0] === 'dam-vision'
+            ? 'dam-vision'
+            : 'software';
       } else if (segments[0] === 'commission') {
         view = 'commission-view';
       }
@@ -236,13 +242,21 @@ const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
       <CommissionCard />
     </div>
 
-    <div id="projects-view" class="tab-view" style={initialView === 'projects-view' ? visibleStyle : hiddenStyle}>
+    <div id="projects-view" class="tab-view projects-view" style={initialView === 'projects-view' ? visibleStyle : hiddenStyle}>
       <TopazPanExperience
         lang={serverLang}
         title={t('project.title')} 
         description={t('project.subtitle')} 
         version={topazPanVersion}
         initialOpen={initialTopazOpen}
+      />
+
+      <DamVisionExperience
+        lang={serverLang}
+        title={t('dam.title')}
+        description={t('dam.subtitle')}
+        version={t('dam.version')}
+        initialOpen={initialDamOpen}
       />
     </div>
   </div>
@@ -256,5 +270,40 @@ const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
 
   .tab-view {
     transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .projects-view {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    isolation: isolate;
+  }
+
+  .projects-view > [data-topaz-pan-experience],
+  .projects-view > [data-dam-experience] {
+    transition:
+      opacity 0.26s ease,
+      transform 0.52s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.4s ease,
+      max-height 0.52s cubic-bezier(0.22, 1, 0.36, 1),
+      margin 0.34s ease;
+    max-height: 2200px;
+    transform-origin: top center;
+    will-change: opacity, transform, max-height;
+  }
+
+  .projects-view > .is-focused-project {
+    z-index: 1;
+  }
+
+  .projects-view > .is-hidden-project {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+    filter: blur(10px);
+    max-height: 0;
+    overflow: hidden;
+    margin: 0;
+    pointer-events: none;
   }
 </style>

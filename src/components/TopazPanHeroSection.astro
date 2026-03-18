@@ -35,6 +35,11 @@ const t = (key: keyof typeof ui['en']) => ui[lang][key];
       {t('project.hero.body')}
     </p>
 
+    <div class="hero-specs">
+      <span class="hero-spec-pill" data-i18n="project.meta.type">{t('project.meta.type')}</span>
+      <span class="hero-spec-pill" data-i18n="project.meta.platforms">{t('project.meta.platforms')}</span>
+    </div>
+
     <div class="hero-actions">
       <a href={topazPanLinks.releases} target="_blank" rel="noopener noreferrer" class="hero-button">
         <Icon name="simple-icons:github" size={16} />
@@ -154,6 +159,28 @@ const t = (key: keyof typeof ui['en']) => ui[lang][key];
     align-items: center;
     flex-wrap: wrap;
     gap: 12px 16px;
+  }
+
+  .hero-specs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .hero-spec-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.28);
+    border: 1px solid rgba(121, 180, 201, 0.16);
+    color: #5f90a2;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    white-space: nowrap;
   }
 
   .hero-button {

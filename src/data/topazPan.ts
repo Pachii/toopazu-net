@@ -8,10 +8,10 @@ export const topazPanAssets = {
   poster: '/topaz-pan-demo/poster.svg',
   video: '/topaz-pan-demo/video.mp4',
   tracks: {
-    instrumental: '/topaz-pan-demo/instrumental.wav',
-    mainVocal: '/topaz-pan-demo/main-vocal.wav',
-    harmonyOriginal: '/topaz-pan-demo/harmony-original.wav',
-    harmonyProcessed: '/topaz-pan-demo/harmony-topaz-pan.wav',
+    instrumental: '/topaz-pan-demo/instrumental.mp3',
+    mainVocal: '/topaz-pan-demo/main-vocal.mp3',
+    harmonyOriginal: '/topaz-pan-demo/harmony-original.mp3',
+    harmonyProcessed: '/topaz-pan-demo/harmony-topaz-pan.mp3',
   },
 } as const;
 

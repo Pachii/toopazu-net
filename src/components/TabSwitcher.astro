@@ -94,6 +94,12 @@ const initialIndex =
 
     if (!switcher) return;
 
+    const notifyRouteChange = (target, pathname) => {
+      document.dispatchEvent(new CustomEvent('app-route-change', {
+        detail: { target, pathname }
+      }));
+    };
+
     // Helper: Determine URL path for a view
     function getPathForView(target: string) {
       if (target === 'projects-view') return '/software';
@@ -181,6 +187,8 @@ const initialIndex =
         if (window.location.pathname !== fullNewPath) {
           window.history.pushState({ target }, '', fullNewPath);
         }
+
+        notifyRouteChange(target || 'links-view', fullNewPath);
       });
     });
 
@@ -193,6 +201,8 @@ const initialIndex =
       } else if (pathname.endsWith('/commission')) {
         popTarget = 'commission-view';
       }
+
+      notifyRouteChange(popTarget, window.location.pathname);
 
       btns.forEach((btn, index) => {
         const htmlBtn = btn as HTMLElement;

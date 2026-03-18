@@ -1,0 +1,159 @@
+---
+import { damVisionHiddenCheckGroups, damVisionLinks } from '../data/damVision';
+import { ui } from '../i18n/ui';
+import type { AppLang } from '../i18n/utils';
+
+interface Props {
+  lang: AppLang;
+}
+
+const { lang } = Astro.props;
+const t = (key: keyof typeof ui['en']) => ui[lang][key];
+---
+<section class="dam-section">
+  <div class="dam-section-header">
+    <p class="dam-section-kicker" data-i18n="dam.effects.eyebrow">{t('dam.effects.eyebrow')}</p>
+    <h3 class="dam-section-title" data-i18n="dam.effects.title">{t('dam.effects.title')}</h3>
+    <p class="dam-effects-body" data-i18n="dam.effects.body">{t('dam.effects.body')}</p>
+  </div>
+
+  <div class="dam-effects-grid">
+    {damVisionHiddenCheckGroups.map((group) => (
+      <article class={`dam-effects-card is-${group.id}`}>
+        <div class="dam-effects-card-head">
+          <p class="dam-effects-card-label">{group.label[lang]}</p>
+          <p class="dam-effects-card-note">{group.note[lang]}</p>
+        </div>
+
+        <div class="dam-effects-chip-grid">
+          {group.items[lang].map((item) => (
+            <span class="dam-effects-chip">{item}</span>
+          ))}
+        </div>
+      </article>
+    ))}
+  </div>
+
+  <p class="dam-effects-reference">
+    <span data-i18n="dam.effects.reference">{t('dam.effects.reference')}</span>
+    <a href={damVisionLinks.techniquesReference} target="_blank" rel="noopener noreferrer">
+      {lang === 'jp' ? '精密採点Aiについて雑記 ～表現技法編～ 改訂版' : 'Precision Scoring Ai notes: expression techniques'}
+    </a>
+  </p>
+</section>
+
+<style>
+  .dam-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .dam-section-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .dam-section-kicker {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #6b9aac;
+    font-weight: 700;
+  }
+
+  .dam-section-title {
+    margin: 0;
+    font-size: 1.04rem;
+    line-height: 1.45;
+    color: #4f6f7c;
+    font-weight: 700;
+  }
+
+  .dam-effects-body {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: var(--text-main);
+  }
+
+  .dam-effects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .dam-effects-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 16px;
+    border-radius: 22px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.14));
+    border: 1px solid rgba(121, 180, 201, 0.16);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.24),
+      0 12px 24px rgba(121, 180, 201, 0.06);
+  }
+
+  .dam-effects-card-head {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .dam-effects-card-label {
+    margin: 0;
+    font-size: 1.04rem;
+    line-height: 1.45;
+    color: #4f6f7c;
+    font-weight: 700;
+  }
+
+  .dam-effects-card-note {
+    margin: 0;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: rgba(79, 111, 124, 0.86);
+  }
+
+  .dam-effects-chip-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .dam-effects-chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 29px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.46);
+    border: 1px solid rgba(121, 180, 201, 0.16);
+    color: #557d8c;
+    font-size: 0.78rem;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .dam-effects-reference {
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: rgba(79, 111, 124, 0.82);
+  }
+
+  .dam-effects-reference a {
+    color: #5f90a2;
+    font-weight: 700;
+  }
+
+  @media (max-width: 640px) {
+    .dam-effects-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

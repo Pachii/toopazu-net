@@ -19,16 +19,15 @@ const demoDir = join(publicDir, 'topaz-pan-demo');
 const videoFileName = readdirSync(demoDir).find(fileName => /\.(mp4|webm)$/i.test(fileName)) ?? null;
 const hasVideo = videoFileName ? existsSync(join(demoDir, videoFileName)) : false;
 const hasAudio = [
-  'instrumental.wav',
-  'main-vocal.wav',
-  'harmony-original.wav',
-  'harmony-topaz-pan.wav',
+  'instrumental.mp3',
+  'main-vocal.mp3',
+  'harmony-original.mp3',
+  'harmony-topaz-pan.mp3',
 ].every(fileName => existsSync(join(demoDir, fileName)));
 
 const demoConfig = {
   hasVideo,
   hasAudio,
-  initialOffset: 106,
   assets: {
     ...topazPanAssets,
     video: hasVideo ? `/topaz-pan-demo/${videoFileName}` : topazPanAssets.video,
@@ -36,20 +35,20 @@ const demoConfig = {
 };
 ---
 <section class="pan-section">
-  <div class="pan-section-header">
-    <p class="pan-section-kicker" data-i18n="project.demo.eyebrow">{t('project.demo.eyebrow')}</p>
-    <h3 class="pan-section-title" data-i18n="project.demo.title">{t('project.demo.title')}</h3>
-    <p class="pan-section-body" data-i18n="project.demo.body">
-      {t('project.demo.body')}
-    </p>
-  </div>
-
   <div
     class={`pan-demo-shell ${hasAudio ? '' : 'is-disabled'} ${hasVideo ? 'has-video' : 'has-poster'}`}
     data-topaz-demo
     data-initial-status={hasAudio ? 'idle' : 'error'}
     tabindex="0"
   >
+    <div class="pan-demo-header">
+      <p class="pan-section-kicker" data-i18n="project.demo.eyebrow">{t('project.demo.eyebrow')}</p>
+      <h3 class="pan-section-title" data-i18n="project.demo.title">{t('project.demo.title')}</h3>
+      <p class="pan-section-body" data-i18n="project.demo.body">
+        {t('project.demo.body')}
+      </p>
+    </div>
+
     <div class="pan-demo-stage" data-plugin-enabled="false" data-playing="false">
       {hasVideo ? (
         <video
@@ -169,6 +168,30 @@ const demoConfig = {
 </section>
 
 <style>
+  .pan-section-header,
+  .pan-demo-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .pan-section-kicker {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #6b9aac;
+    font-weight: 700;
+  }
+
+  .pan-section-title {
+    margin: 0;
+    font-size: 1.04rem;
+    line-height: 1.45;
+    color: #4f6f7c;
+    font-weight: 700;
+  }
+
   .pan-section-body {
     margin: 0;
     font-size: 0.92rem;
@@ -606,7 +629,7 @@ const demoConfig = {
       this.gains = null;
       this.sources = null;
       this.startedAt = 0;
-      this.pauseOffset = config.initialOffset || 0;
+      this.pauseOffset = 0;
       this.duration = 0;
       this.isPlaying = false;
       this.isLoaded = false;
@@ -959,12 +982,12 @@ const demoConfig = {
         }
       };
 
-      setGain(this.gains.instrumental, this.trackEnabled.instrumental ? 0.92 : 0);
+      setGain(this.gains.instrumental, this.trackEnabled.instrumental ? 1 : 0);
       setGain(this.gains.main, this.trackEnabled.main ? 1 : 0);
 
       const harmonyActive = this.trackEnabled.harmony;
-      setGain(this.gains.harmonyOriginal, harmonyActive && !this.pluginEnabled ? 0.82 : 0);
-      setGain(this.gains.harmonyProcessed, harmonyActive && this.pluginEnabled ? 0.82 : 0);
+      setGain(this.gains.harmonyOriginal, harmonyActive && !this.pluginEnabled ? 1 : 0);
+      setGain(this.gains.harmonyProcessed, harmonyActive && this.pluginEnabled ? 1 : 0);
     }
 
     async play() {
@@ -1063,7 +1086,7 @@ const demoConfig = {
 
       if (this.duration && elapsed >= this.duration) {
         this.pause(true);
-        this.setStatus('ended');
+        this.setStatus('ready');
         return;
       }
 

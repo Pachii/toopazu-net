@@ -1,4 +1,5 @@
 ---
+import { ui } from '../i18n/ui';
 import type { AppLang } from '../i18n/utils';
 
 interface Props {
@@ -9,6 +10,7 @@ interface Props {
 }
 
 const { lang, title, description, version } = Astro.props;
+const t = (key: keyof typeof ui['en']) => ui[lang][key];
 ---
 <button type="button" class="plugin-card" data-topaz-open aria-expanded="false">
   <div class="card-inner">
@@ -21,6 +23,11 @@ const { lang, title, description, version } = Astro.props;
       </h2>
 
       <p class="description" data-i18n="project.subtitle">{description}</p>
+
+      <div class="plugin-badges">
+        <span class="plugin-badge" data-i18n="project.meta.type">{t('project.meta.type')}</span>
+        <span class="plugin-badge" data-i18n="project.meta.platforms">{t('project.meta.platforms')}</span>
+      </div>
     </div>
 
     <span class="corner-arrow" aria-hidden="true">
@@ -99,9 +106,9 @@ const { lang, title, description, version } = Astro.props;
   }
 
   .plugin-title-emoji {
-    font-size: 0.6em;
+    font-size: 1em;
     line-height: 1;
-    transform: translateY(-0.02em);
+    transform: translateY(-0.01em);
     filter: saturate(0.88);
   }
 
@@ -125,6 +132,28 @@ const { lang, title, description, version } = Astro.props;
     opacity: 0.92;
     margin: 0;
     max-width: 24ch;
+  }
+
+  .plugin-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 2px;
+  }
+
+  .plugin-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    white-space: nowrap;
   }
 
   .corner-arrow {

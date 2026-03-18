@@ -1,0 +1,419 @@
+---
+import { Icon } from 'astro-icon/components';
+import DamVisionHeroSection from './DamVisionHeroSection.astro';
+import DamVisionEffectAtlas from './DamVisionEffectAtlas.astro';
+import { ui } from '../i18n/ui';
+import type { AppLang } from '../i18n/utils';
+import { damVisionAssets } from '../data/damVision';
+
+interface Props {
+  lang: AppLang;
+  version: string;
+}
+
+const { lang, version } = Astro.props;
+const t = (key: keyof typeof ui['en']) => ui[lang][key];
+---
+<div class="dam-page">
+  <div class="dam-rail dam-hero-wrap">
+    <button type="button" class="dam-close" data-dam-close>
+      <Icon name="mdi:arrow-left" size={16} />
+      <span data-i18n="dam.close">{t('dam.close')}</span>
+    </button>
+
+    <DamVisionHeroSection lang={lang} version={version} />
+  </div>
+
+  <div class="dam-rail">
+    <section class="dam-panel-surface dam-screenshot-section">
+      <div class="dam-section-header dam-screenshot-header">
+        <p class="dam-section-kicker" data-i18n="dam.screenshot.eyebrow">{t('dam.screenshot.eyebrow')}</p>
+        <h3 class="dam-section-title" data-i18n="dam.screenshot.title">{t('dam.screenshot.title')}</h3>
+      </div>
+
+      <div class="dam-screenshot-frame">
+        <button type="button" class="dam-screenshot-trigger" data-dam-screenshot-open aria-label={lang === 'jp' ? 'スクリーンショットを拡大' : 'Open screenshot'}>
+          <img
+            class="dam-screenshot-image"
+            src={damVisionAssets.screenshot}
+            alt={lang === 'jp' ? 'DAM Visionの開発中スクリーンショット' : 'In-development DAM Vision screenshot'}
+            loading="lazy"
+            decoding="async"
+          />
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <div class="dam-rail dam-story-grid">
+    <section class="dam-panel-surface">
+      <div class="dam-section-header">
+        <p class="dam-section-kicker" data-i18n="dam.overview.eyebrow">{t('dam.overview.eyebrow')}</p>
+        <h3 class="dam-section-title" data-i18n="dam.overview.title">{t('dam.overview.title')}</h3>
+      </div>
+      <p class="dam-copy" data-i18n="dam.overview.body">{t('dam.overview.body')}</p>
+    </section>
+
+    <section class="dam-panel-surface">
+      <div class="dam-section-header">
+        <p class="dam-section-kicker" data-i18n="dam.hidden.eyebrow">{t('dam.hidden.eyebrow')}</p>
+        <h3 class="dam-section-title" data-i18n="dam.hidden.title">{t('dam.hidden.title')}</h3>
+      </div>
+      <p class="dam-copy" data-i18n="dam.hidden.body">{t('dam.hidden.body')}</p>
+    </section>
+  </div>
+
+  <div class="dam-rail">
+    <section class="dam-panel-surface">
+      <DamVisionEffectAtlas lang={lang} />
+    </section>
+  </div>
+
+  <div class="dam-rail">
+    <section class="dam-panel-surface">
+      <div class="dam-section-header">
+        <p class="dam-section-kicker" data-i18n="dam.ranking.eyebrow">{t('dam.ranking.eyebrow')}</p>
+        <h3 class="dam-section-title" data-i18n="dam.ranking.title">{t('dam.ranking.title')}</h3>
+      </div>
+      <p class="dam-copy" data-i18n="dam.ranking.body">{t('dam.ranking.body')}</p>
+    </section>
+  </div>
+</div>
+
+<dialog class="dam-screenshot-dialog" data-dam-screenshot-dialog>
+  <div class="dam-screenshot-dialog-shell">
+    <button
+      type="button"
+      class="dam-screenshot-dialog-close"
+      data-dam-screenshot-close
+      aria-label={lang === 'jp' ? '閉じる' : 'Close'}
+    >
+      <Icon name="mdi:close" size={18} />
+    </button>
+
+    <img
+      class="dam-screenshot-dialog-image"
+      src={damVisionAssets.screenshot}
+      alt={lang === 'jp' ? 'DAM Visionの開発中スクリーンショット' : 'In-development DAM Vision screenshot'}
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+</dialog>
+
+<script>
+  const openButton = document.querySelector('[data-dam-screenshot-open]');
+  const closeButton = document.querySelector('[data-dam-screenshot-close]');
+  const dialog = document.querySelector('[data-dam-screenshot-dialog]');
+  let closeTimer;
+
+  const openDialog = () => {
+    if (!(dialog instanceof HTMLDialogElement) || dialog.open) return;
+    dialog.showModal();
+    document.documentElement.classList.add('dam-screenshot-open');
+    document.body.classList.add('dam-screenshot-open');
+    requestAnimationFrame(() => {
+      dialog.dataset.state = 'open';
+    });
+  };
+
+  const closeDialog = () => {
+    if (!(dialog instanceof HTMLDialogElement) || !dialog.open) return;
+    dialog.dataset.state = 'closing';
+    window.clearTimeout(closeTimer);
+    closeTimer = window.setTimeout(() => {
+      dialog.close();
+      delete dialog.dataset.state;
+      document.documentElement.classList.remove('dam-screenshot-open');
+      document.body.classList.remove('dam-screenshot-open');
+    }, 220);
+  };
+
+  if (openButton instanceof HTMLButtonElement && closeButton instanceof HTMLButtonElement && dialog instanceof HTMLDialogElement) {
+    openButton.addEventListener('click', openDialog);
+    closeButton.addEventListener('click', closeDialog);
+    dialog.addEventListener('cancel', (event) => {
+      event.preventDefault();
+      closeDialog();
+    });
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) closeDialog();
+    });
+    dialog.addEventListener('close', () => {
+      window.clearTimeout(closeTimer);
+      delete dialog.dataset.state;
+      document.documentElement.classList.remove('dam-screenshot-open');
+      document.body.classList.remove('dam-screenshot-open');
+    });
+  }
+</script>
+
+<style>
+  :global(html.dam-screenshot-open),
+  :global(body.dam-screenshot-open) {
+    overflow: hidden;
+  }
+
+  .dam-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+  }
+
+  .dam-rail {
+    width: min(100%, 720px);
+    margin: 0 auto;
+  }
+
+  .dam-hero-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px 22px 24px;
+    border-radius: 28px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.14)),
+      radial-gradient(circle at top right, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0) 42%);
+    border: 1px solid rgba(121, 180, 201, 0.18);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.3),
+      0 18px 38px rgba(121, 180, 201, 0.1);
+  }
+
+  .dam-close {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    align-self: flex-start;
+    min-height: 38px;
+    padding: 0 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.84);
+    border: 1px solid rgba(121, 180, 201, 0.16);
+    color: #557d8c;
+    font-size: 0.82rem;
+    font-weight: 700;
+    box-shadow: 0 10px 22px rgba(121, 180, 201, 0.08);
+    transition: transform 0.18s ease, background-color 0.18s ease;
+  }
+
+  .dam-close:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.96);
+  }
+
+  .dam-story-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .dam-screenshot-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .dam-screenshot-header {
+    gap: 6px;
+  }
+
+  .dam-screenshot-frame {
+    overflow: hidden;
+    border-radius: 18px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.1)),
+      rgba(113, 165, 189, 0.14);
+    border: 1px solid rgba(121, 180, 201, 0.18);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.22),
+      0 14px 30px rgba(121, 180, 201, 0.08);
+  }
+
+  .dam-screenshot-trigger {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: zoom-in;
+  }
+
+  .dam-screenshot-image {
+    display: block;
+    width: 100%;
+    height: min(360px, 56vw);
+    object-fit: cover;
+    object-position: top center;
+    transition: transform 0.22s ease, filter 0.22s ease;
+  }
+
+  .dam-screenshot-trigger:hover .dam-screenshot-image {
+    transform: scale(1.012);
+    filter: saturate(1.02);
+  }
+
+  .dam-screenshot-dialog {
+    width: min(92vw, 1040px);
+    max-width: none;
+    margin: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 30px;
+    background: transparent;
+    box-shadow: none;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.22s ease, transform 0.22s ease;
+  }
+
+  .dam-screenshot-dialog::backdrop {
+    background: rgba(140, 191, 214, 0.14);
+    backdrop-filter: blur(0px);
+    transition: background 0.22s ease, backdrop-filter 0.22s ease;
+  }
+
+  .dam-screenshot-dialog[data-state='open'],
+  .dam-screenshot-dialog[data-state='closing'] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .dam-screenshot-dialog[data-state='open']::backdrop {
+    background: rgba(140, 191, 214, 0.22);
+    backdrop-filter: blur(10px);
+  }
+
+  .dam-screenshot-dialog[data-state='closing'] {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .dam-screenshot-dialog[data-state='closing']::backdrop {
+    background: rgba(140, 191, 214, 0.14);
+    backdrop-filter: blur(0px);
+  }
+
+  .dam-screenshot-dialog-shell {
+    position: relative;
+    padding: 16px;
+    border-radius: 30px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.18)),
+      radial-gradient(circle at top, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0) 56%);
+    border: 1px solid rgba(121, 180, 201, 0.18);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.34),
+      0 28px 80px rgba(34, 76, 94, 0.18);
+  }
+
+  .dam-screenshot-dialog-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    margin-left: auto;
+    margin-bottom: 12px;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.86);
+    color: #557d8c;
+    cursor: pointer;
+    box-shadow: 0 10px 24px rgba(121, 180, 201, 0.1);
+    transition: transform 0.18s ease, background-color 0.18s ease;
+  }
+
+  .dam-screenshot-dialog-close:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.96);
+  }
+
+  .dam-screenshot-dialog-image {
+    display: block;
+    width: 100%;
+    max-height: calc(90vh - 84px);
+    object-fit: contain;
+    border-radius: 18px;
+    border: 1px solid rgba(121, 180, 201, 0.14);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.22),
+      0 12px 28px rgba(121, 180, 201, 0.08);
+  }
+
+  .dam-panel-surface {
+    padding: 18px 18px 20px;
+    border-radius: 22px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.16));
+    border: 1px solid rgba(121, 180, 201, 0.16);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.26),
+      0 12px 28px rgba(121, 180, 201, 0.08);
+  }
+
+  .dam-section-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .dam-section-kicker {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #6b9aac;
+    font-weight: 700;
+  }
+
+  .dam-section-title {
+    margin: 0;
+    font-size: 1.04rem;
+    line-height: 1.45;
+    color: #4f6f7c;
+    font-weight: 700;
+  }
+
+  .dam-copy {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--text-main);
+  }
+
+  @media (max-width: 720px) {
+    .dam-rail {
+      width: 100%;
+    }
+
+    .dam-hero-wrap {
+      padding: 18px 16px 20px;
+      border-radius: 24px;
+    }
+
+    .dam-story-grid {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .dam-panel-surface {
+      padding: 16px 16px 18px;
+      border-radius: 20px;
+    }
+
+    .dam-screenshot-image {
+      height: 220px;
+    }
+
+    .dam-screenshot-dialog {
+      width: min(94vw, 1100px);
+      border-radius: 24px;
+    }
+
+    .dam-screenshot-dialog-shell {
+      padding: 12px;
+      border-radius: 24px;
+    }
+  }
+</style>
