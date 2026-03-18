@@ -16,11 +16,11 @@ const { lang, title, description, version, initialOpen = false, initialHidden = 
 ---
 <section
   class={`dam-experience ${initialOpen ? 'is-focused-project' : ''} ${initialHidden ? 'is-hidden-project' : ''}`}
-  data-dam-experience
+  data-project-panel
   data-project-route="dam-vision"
 >
-  <div class={`dam-shell ${initialOpen ? 'is-open' : ''}`} data-dam-shell>
-    <div class="dam-compact">
+  <div class={`dam-shell ${initialOpen ? 'is-open' : ''}`} data-project-shell>
+    <div class="dam-compact" data-project-compact>
       <DamVisionCard
         lang={lang}
         title={title}
@@ -39,7 +39,6 @@ const { lang, title, description, version, initialOpen = false, initialHidden = 
 
 <style>
   .dam-experience {
-    margin-top: 16px;
     animation: fadeIn 0.6s ease forwards;
   }
 
@@ -48,8 +47,13 @@ const { lang, title, description, version, initialOpen = false, initialHidden = 
     display: flex;
     flex-direction: column;
     gap: 0;
-    overflow: hidden;
-    overflow: clip;
+    overflow: visible;
+    z-index: 0;
+  }
+
+  .dam-shell.is-open,
+  .dam-shell.is-closing {
+    z-index: 2;
   }
 
   .dam-compact {
@@ -57,9 +61,9 @@ const { lang, title, description, version, initialOpen = false, initialHidden = 
     z-index: 2;
     transform-origin: top center;
     transition:
-      opacity 0.26s ease,
-      transform 0.52s cubic-bezier(0.22, 1, 0.36, 1),
-      filter 0.36s ease;
+      opacity 0.34s ease,
+      transform 0.64s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.46s ease;
     will-change: opacity, transform, filter;
   }
 
@@ -67,12 +71,12 @@ const { lang, title, description, version, initialOpen = false, initialHidden = 
     display: grid;
     grid-template-rows: 0fr;
     opacity: 0;
-    transform: translateY(22px) scale(0.985);
+    transform: translateY(18px) scale(0.99);
     transform-origin: top center;
     transition:
-      grid-template-rows 0.62s cubic-bezier(0.22, 1, 0.36, 1),
-      opacity 0.4s ease,
-      transform 0.62s cubic-bezier(0.22, 1, 0.36, 1);
+      grid-template-rows 0.66s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.48s ease,
+      transform 0.66s cubic-bezier(0.22, 1, 0.36, 1);
     will-change: opacity, transform, grid-template-rows;
   }
 
@@ -83,16 +87,15 @@ const { lang, title, description, version, initialOpen = false, initialHidden = 
 
   .dam-shell.is-open,
   .dam-shell.is-closing {
-    min-height: var(--dam-compact-height, 220px);
+    min-height: var(--project-compact-height, 220px);
   }
 
-  .dam-shell.is-open .dam-compact,
-  .dam-shell.is-closing .dam-compact {
+  .dam-shell.is-open .dam-compact {
     position: absolute;
     inset: 0 0 auto 0;
-    transform: translateY(-18px) scale(0.97);
+    transform: translateY(-14px) scale(0.982);
     pointer-events: none;
-    filter: blur(8px);
+    filter: blur(6px);
   }
 
   .dam-shell.is-open .dam-compact {
@@ -100,9 +103,13 @@ const { lang, title, description, version, initialOpen = false, initialHidden = 
   }
 
   .dam-shell.is-closing .dam-compact {
+    position: absolute;
+    inset: 0 0 auto 0;
     opacity: 1;
     transform: translateY(0) scale(1);
+    pointer-events: none;
     filter: blur(0);
+    transition-delay: 0.1s, 0.1s, 0.1s;
   }
 
   .dam-shell.is-open .dam-expanded,
@@ -115,7 +122,7 @@ const { lang, title, description, version, initialOpen = false, initialHidden = 
   .dam-shell.is-closing .dam-expanded {
     grid-template-rows: 0fr;
     opacity: 0;
-    transform: translateY(20px) scale(0.985);
+    transform: translateY(14px) scale(0.992);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -125,154 +132,3 @@ const { lang, title, description, version, initialOpen = false, initialHidden = 
     }
   }
 </style>
-
-<script is:inline>
-  (() => {
-    const normalizeDamLang = (value) => value === 'ja' || value === 'jp' ? 'jp' : 'en';
-    const getProjectRouteFromPath = (pathname) => {
-      const segments = pathname.replace(/\/+$/, '').split('/').filter(Boolean);
-
-      if (segments[0] === 'en' || segments[0] === 'jp' || segments[0] === 'ja') {
-        segments.shift();
-      }
-
-      return segments[0] === 'pan' || segments[0] === 'dam-vision' ? segments[0] : '';
-    };
-
-    const syncProjectStack = (root, preferredRoute = null) => {
-      const stack = root.closest('.projects-view');
-      if (!(stack instanceof HTMLElement)) return;
-
-      const experiences = stack.querySelectorAll('[data-project-route]');
-      const openShell = stack.querySelector('.topaz-pan-shell.is-open, .dam-shell.is-open');
-      const fallbackRoute = openShell?.closest('[data-project-route]')?.dataset.projectRoute ?? '';
-      const activeRoute = typeof preferredRoute === 'string'
-        ? preferredRoute
-        : stack.dataset.activeProject || fallbackRoute;
-      const hasOpenProject = Boolean(activeRoute);
-
-      if (activeRoute) {
-        stack.dataset.activeProject = activeRoute;
-      } else {
-        delete stack.dataset.activeProject;
-      }
-
-      experiences.forEach((experience) => {
-        const isFocused = hasOpenProject && experience.dataset.projectRoute === activeRoute;
-        experience.classList.toggle('is-focused-project', isFocused);
-        experience.classList.toggle('is-hidden-project', hasOpenProject && !isFocused);
-      });
-    };
-
-    const getLocalizedDamPath = (pathname, target) => {
-      const segments = pathname.replace(/\/+$/, '').split('/').filter(Boolean);
-      let lang = '';
-
-      if (segments[0] === 'en' || segments[0] === 'jp' || segments[0] === 'ja') {
-        lang = normalizeDamLang(segments.shift());
-      }
-
-      const prefix = lang ? `/${lang}` : '';
-      return target === 'dam-vision' ? `${prefix}/dam-vision` : `${prefix}/software`;
-    };
-
-    const syncDamPanels = () => {
-      document.querySelectorAll('[data-dam-experience]').forEach(root => {
-        if (root.dataset.damReady === 'true') return;
-        root.dataset.damReady = 'true';
-
-        const shell = root.querySelector('[data-dam-shell]');
-        const openButton = root.querySelector('[data-dam-open]');
-        const closeButton = root.querySelector('[data-dam-close]');
-        const compact = root.querySelector('.dam-compact');
-
-        if (!shell || !openButton || !closeButton || !(compact instanceof HTMLElement)) return;
-
-        let closeTimer = 0;
-        let compactHeightObserver;
-
-        const syncCompactHeight = () => {
-          shell.style.setProperty('--dam-compact-height', `${compact.getBoundingClientRect().height}px`);
-        };
-
-        if ('ResizeObserver' in window) {
-          compactHeightObserver = new ResizeObserver(syncCompactHeight);
-          compactHeightObserver.observe(compact);
-        } else {
-          window.addEventListener('resize', syncCompactHeight);
-        }
-        syncCompactHeight();
-
-        const setOpen = (open, pushHistory = false, immediate = false, activeRoute = open ? 'dam-vision' : null) => {
-          window.clearTimeout(closeTimer);
-
-          if (open) {
-            shell.classList.remove('is-closing');
-            shell.classList.add('is-open');
-          } else if (immediate) {
-            shell.classList.remove('is-open');
-            shell.classList.remove('is-closing');
-          } else {
-            shell.classList.add('is-closing');
-            shell.classList.remove('is-open');
-            closeTimer = window.setTimeout(() => {
-              shell.classList.remove('is-closing');
-            }, 620);
-          }
-
-          openButton.setAttribute('aria-expanded', open ? 'true' : 'false');
-          if (activeRoute === null) {
-            syncProjectStack(root);
-          } else {
-            syncProjectStack(root, activeRoute);
-          }
-
-          if (pushHistory) {
-            const nextPath = getLocalizedDamPath(window.location.pathname, open ? 'dam-vision' : 'software');
-            if (window.location.pathname !== nextPath) {
-              window.history.pushState({ damVisionOpen: open }, '', nextPath);
-            }
-          }
-        };
-
-        const syncWithLocation = (nextPath = window.location.pathname) => {
-          const path = nextPath.replace(/\/+$/, '');
-          const activeRoute = getProjectRouteFromPath(path);
-          setOpen(activeRoute === 'dam-vision', false, root.dataset.damSynced !== 'true', activeRoute);
-          root.dataset.damSynced = 'true';
-        };
-
-        const handleAppRouteChange = (event) => {
-          const nextPath = event.detail?.pathname || window.location.pathname;
-          syncWithLocation(nextPath);
-        };
-
-        openButton.addEventListener('click', () => {
-          syncProjectStack(root, 'dam-vision');
-          document.dispatchEvent(new CustomEvent('project-panel-open', { detail: { route: 'dam-vision' } }));
-          window.requestAnimationFrame(() => {
-            setOpen(true, true, false, 'dam-vision');
-          });
-        });
-        closeButton.addEventListener('click', () => {
-          syncProjectStack(root, '');
-          setOpen(false, true, false, '');
-        });
-        document.addEventListener('project-panel-open', (event) => {
-          if (event.detail?.route !== 'dam-vision') {
-            setOpen(false, false, true, event.detail?.route ?? '');
-          }
-        });
-        document.addEventListener('app-route-change', handleAppRouteChange);
-        window.addEventListener('popstate', syncWithLocation);
-        syncWithLocation();
-      });
-    };
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', syncDamPanels);
-    } else {
-      syncDamPanels();
-    }
-  })();
-</script>

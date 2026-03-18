@@ -17,6 +17,7 @@ async function fetchJson(url: string) {
 
 export async function getTopazPanVersion() {
   if (cachedTopazPanVersion) return cachedTopazPanVersion;
+  let lastError: unknown = null;
 
   try {
     const latestRelease = await fetchJson('https://api.github.com/repos/Pachii/topaz-pan/releases/latest');
@@ -24,7 +25,9 @@ export async function getTopazPanVersion() {
       cachedTopazPanVersion = latestRelease.tag_name;
       return cachedTopazPanVersion;
     }
-  } catch {}
+  } catch (error) {
+    lastError = error;
+  }
 
   try {
     const tags = await fetchJson('https://api.github.com/repos/Pachii/topaz-pan/tags?per_page=1');
@@ -32,8 +35,13 @@ export async function getTopazPanVersion() {
       cachedTopazPanVersion = tags[0].name;
       return cachedTopazPanVersion;
     }
-  } catch {}
+  } catch (error) {
+    lastError = error;
+  }
 
+  if (lastError) {
+    console.warn('Falling back to bundled topaz pan version.', lastError);
+  }
   cachedTopazPanVersion = 'v0.1.0-alpha';
   return cachedTopazPanVersion;
 }

@@ -11,6 +11,7 @@ import PreviousWorksCarousel from './PreviousWorksCarousel.astro';
 import MixedWorksList from './MixedWorksList.astro';
 
 import { defaultLang, ui } from '../i18n/ui';
+import { parseAppPath } from '../utils/appRoutes';
 import { profileInfo, socialLinks, featuredData } from '../data/profile';
 import { getTopazPanVersion } from '../utils/github';
 import { getPlaylistVideos } from '../utils/youtube';
@@ -54,143 +55,24 @@ mixedVideos.forEach(v => {
 const featuredTitle = t('featured.badge');
 const featuredI18nKey = 'featured.badge';
 const videoTitle = latestVideo ? clientTranslations[serverLang]['video.title'] : '';
-const pathname = Astro.url.pathname.replace(/\/$/, '');
-const initialView = pathname.endsWith('/software') || pathname.endsWith('/pan') || pathname.endsWith('/dam-vision')
-  ? 'projects-view'
-  : pathname.endsWith('/commission')
-    ? 'commission-view'
-    : 'links-view';
-const initialTopazOpen = pathname.endsWith('/pan');
-const initialDamOpen = pathname.endsWith('/dam-vision');
-const initialActiveProject = initialTopazOpen ? 'pan' : initialDamOpen ? 'dam-vision' : '';
+const routeInfo = parseAppPath(Astro.url.pathname);
+const initialView = routeInfo.view;
+const initialTopazOpen = routeInfo.activeProjectRoute === 'pan';
+const initialDamOpen = routeInfo.activeProjectRoute === 'dam-vision';
+const initialActiveProject = routeInfo.activeProjectRoute;
+const appPageState = JSON.stringify({
+  forcedLang,
+  translations: clientTranslations,
+}).replace(/</g, '\\u003c');
 const visibleStyle = 'display: block; opacity: 1; transform: translateY(0);';
 const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
 ---
 <Layout title="とぱず / topaz" currentLang={serverLang}>
-  <script is:inline define:vars={{ translations: clientTranslations, defaultLang, forcedLang }}>
-    const normalizeLanguage = (value) => value === 'ja' || value === 'jp' ? 'jp' : 'en';
-    const getHtmlLang = (lang) => lang === 'jp' ? 'ja' : 'en';
+  <script type="application/json" data-app-page-state set:html={appPageState}></script>
+  <script>
+    import { setupAppPage } from '../scripts/setupAppPage';
 
-    const getRouteInfo = (pathname = window.location.pathname) => {
-      const segments = pathname.replace(/\/+$/, '').split('/').filter(Boolean);
-      let routeLang = null;
-
-      if (segments[0] === 'en' || segments[0] === 'jp' || segments[0] === 'ja') {
-        routeLang = normalizeLanguage(segments.shift());
-      }
-
-      let view = 'links-view';
-      let projectRoute = 'software';
-      if (segments[0] === 'software' || segments[0] === 'pan' || segments[0] === 'dam-vision') {
-        view = 'projects-view';
-        projectRoute = segments[0] === 'pan'
-          ? 'pan'
-          : segments[0] === 'dam-vision'
-            ? 'dam-vision'
-            : 'software';
-      } else if (segments[0] === 'commission') {
-        view = 'commission-view';
-      }
-
-      return { routeLang, view, projectRoute };
-    };
-
-    const buildPath = (view, lang = '', projectRoute = 'software') => {
-      const prefix = lang ? `/${lang}` : '';
-      const suffix = view === 'projects-view'
-        ? `/${projectRoute}`
-        : view === 'commission-view'
-          ? '/commission'
-          : '';
-
-      return `${prefix}${suffix}` || '/';
-    };
-
-    window.translations = translations;
-
-    const getInitialLanguage = () => {
-      const { routeLang } = getRouteInfo();
-      let lang = forcedLang || routeLang || localStorage.getItem('preferred-language');
-
-      if (!lang) {
-        const browserLang = navigator.language || navigator.userLanguage || '';
-        lang = normalizeLanguage(browserLang.split('-')[0].toLowerCase());
-      }
-
-      return normalizeLanguage(lang);
-    };
-
-    const initialLanguage = getInitialLanguage();
-    document.documentElement.lang = getHtmlLang(initialLanguage);
-
-    window.setLanguage = function(lang, animate = true) {
-      lang = normalizeLanguage(lang);
-      if (!translations[lang]) return;
-
-      localStorage.setItem('preferred-language', lang);
-
-      const targetEls = document.querySelectorAll('[data-i18n], .commission-card');
-
-      const applyLanguage = () => {
-        document.documentElement.lang = getHtmlLang(lang);
-
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-          const key = el.getAttribute('data-i18n');
-          if (translations[lang] && translations[lang][key]) {
-            el.textContent = translations[lang][key];
-          }
-        });
-
-        document.querySelectorAll('.lang-btn').forEach(btn => {
-          if (btn.getAttribute('data-lang') === lang) {
-            btn.classList.add('active');
-          } else {
-            btn.classList.remove('active');
-          }
-        });
-
-        document.dispatchEvent(new CustomEvent('app-language-change', { detail: { lang } }));
-      };
-
-      if (animate) {
-        targetEls.forEach(el => {
-          el.style.transition = 'opacity 0.15s ease-out, transform 0.15s ease-out, filter 0.15s ease-out';
-          el.style.opacity = '0';
-          el.style.transform = 'translateY(4px)';
-          el.style.filter = 'blur(2px)';
-        });
-
-        setTimeout(() => {
-          applyLanguage();
-
-          targetEls.forEach(el => {
-            el.style.transition = 'none';
-            el.style.transform = 'translateY(-4px)';
-            void el.offsetWidth;
-            el.style.transition = 'opacity 0.15s ease-out, transform 0.15s ease-out, filter 0.15s ease-out';
-            el.style.opacity = '1';
-            el.style.transform = 'translateY(0)';
-            el.style.filter = 'blur(0px)';
-          });
-        }, 150);
-      } else {
-        applyLanguage();
-      }
-    };
-
-    window.switchLanguageRoute = function(nextLang) {
-      const lang = normalizeLanguage(nextLang);
-      const { view, projectRoute } = getRouteInfo();
-
-      localStorage.setItem('preferred-language', lang);
-      window.location.pathname = buildPath(view, lang, projectRoute);
-    };
-
-    document.addEventListener("DOMContentLoaded", () => {
-      if (typeof window.setLanguage === 'function') {
-        window.setLanguage(initialLanguage, false);
-      }
-    });
+    setupAppPage();
   </script>
 
   <style is:global>
@@ -247,7 +129,9 @@ const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
       id="projects-view"
       class="tab-view projects-view"
       style={initialView === 'projects-view' ? visibleStyle : hiddenStyle}
+      data-project-stack
       data-active-project={initialActiveProject || undefined}
+      data-stack-mode={initialActiveProject ? 'focused' : 'list'}
     >
       <TopazPanExperience
         lang={serverLang}
@@ -284,21 +168,53 @@ const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 0;
     isolation: isolate;
+    --project-card-hover-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --project-card-hover-transform: translateY(-2px) scale(1.008);
+    --project-stack-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --project-stack-return-ease: cubic-bezier(0.18, 1, 0.32, 1);
+    --project-stack-hidden-shift: 16px;
+    --project-stack-hidden-scale: 0.978;
+  }
+</style>
+
+<style is:global>
+  .projects-view > [data-project-route] {
+    position: relative;
+    margin-top: 0;
+    transition:
+      opacity 0.36s ease,
+      transform 0.72s var(--project-stack-ease),
+      filter 0.48s ease,
+      max-height 0.72s var(--project-stack-ease),
+      margin 0.56s var(--project-stack-ease),
+      visibility 0s linear 0s;
+    max-height: 2400px;
+    transform-origin: top center;
+    will-change: opacity, transform, filter, max-height;
   }
 
-  .projects-view > [data-topaz-pan-experience],
-  .projects-view > [data-dam-experience] {
+  .projects-view[data-stack-phase='returning'] > [data-project-route] {
     transition:
-      opacity 0.26s ease,
-      transform 0.52s cubic-bezier(0.22, 1, 0.36, 1),
-      filter 0.4s ease,
-      max-height 0.52s cubic-bezier(0.22, 1, 0.36, 1),
-      margin 0.34s ease;
-    max-height: 2200px;
-    transform-origin: top center;
-    will-change: opacity, transform, max-height;
+      opacity 0.42s ease,
+      transform 0.82s var(--project-stack-return-ease),
+      filter 0.52s ease,
+      max-height 0.82s var(--project-stack-return-ease),
+      margin 0.74s var(--project-stack-return-ease),
+      visibility 0s linear 0s;
+  }
+
+  .projects-view[data-stack-phase='returning'] > [data-project-route]:not(.is-hidden-project) {
+    transition-delay: 0.06s, 0.06s, 0.04s, 0s, 0s;
+  }
+
+  .projects-view[data-stack-mode='list'] > .topaz-pan-experience {
+    margin-top: 4px;
+  }
+
+  .projects-view[data-stack-mode='list'] > .dam-experience {
+    margin-top: 20px;
   }
 
   .projects-view > .is-focused-project {
@@ -307,11 +223,31 @@ const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
 
   .projects-view > .is-hidden-project {
     opacity: 0;
-    transform: translateY(20px) scale(0.97);
-    filter: blur(10px);
+    filter: blur(12px) saturate(0.82);
     max-height: 0;
     overflow: hidden;
     margin: 0;
     pointer-events: none;
+    visibility: hidden;
+    transition-delay: 0s, 0s, 0s, 0s, 0.62s;
+  }
+
+  .projects-view > .is-hidden-project[data-project-relation='before'] {
+    transform: translateY(calc(var(--project-stack-hidden-shift) * -1)) scale(var(--project-stack-hidden-scale));
+  }
+
+  .projects-view > .is-hidden-project[data-project-relation='after'] {
+    transform: translateY(var(--project-stack-hidden-shift)) scale(var(--project-stack-hidden-scale));
+  }
+
+  .projects-view[data-stack-mode='focused'] > .is-focused-project {
+    z-index: 2;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .projects-view,
+    .projects-view > [data-project-route] {
+      transition: none;
+    }
   }
 </style>

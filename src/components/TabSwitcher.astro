@@ -83,155 +83,111 @@ const initialIndex =
 </style>
 
 <script>
+  import { buildAppPath, parseAppPath } from '../utils/appRoutes';
+
   function setupTabs() {
-    const switcher = document.querySelector('.tab-switcher');
-    const btns = document.querySelectorAll('.tab-btn');
+    const switcher = document.querySelector<HTMLElement>('.tab-switcher');
+    const btns = Array.from(document.querySelectorAll<HTMLButtonElement>('.tab-btn'));
     const views = {
       'links-view': document.getElementById('links-view'),
       'projects-view': document.getElementById('projects-view'),
       'commission-view': document.getElementById('commission-view'),
+    } as const;
+
+    if (!switcher || !btns.length) return;
+
+    const notifyRouteChange = (target: string, pathname: string) => {
+      document.dispatchEvent(
+        new CustomEvent('app-route-change', {
+          detail: { target, pathname },
+        }),
+      );
     };
 
-    if (!switcher) return;
+    const setViewVisibility = (element: HTMLElement, visible: boolean, animate: boolean) => {
+      if (visible) {
+        element.style.display = 'block';
 
-    const notifyRouteChange = (target, pathname) => {
-      document.dispatchEvent(new CustomEvent('app-route-change', {
-        detail: { target, pathname }
-      }));
-    };
-
-    // Helper: Determine URL path for a view
-    function getPathForView(target: string) {
-      if (target === 'projects-view') return '/software';
-      if (target === 'commission-view') return '/commission';
-      return '/'; // links-view
-    }
-
-    // Initialize based on URL
-    const pathname = window.location.pathname.replace(/\/$/, ''); // Remove trailing slash
-    let initialTarget = 'links-view';
-    
-    if (pathname.endsWith('/software') || pathname.endsWith('/pan') || pathname.endsWith('/dam-vision')) {
-      initialTarget = 'projects-view';
-    } else if (pathname.endsWith('/commission')) {
-      initialTarget = 'commission-view';
-    }
-
-    // Set initial view immediately (no animation)
-    btns.forEach((btn, index) => {
-      const htmlBtn = btn as HTMLElement;
-      if (htmlBtn.dataset.target === initialTarget) {
-        switcher.classList.remove('pos-0');
-        switcher.classList.add(`pos-${index}`);
-        btns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        Object.entries(views).forEach(([id, element]) => {
-          if (element) {
-            if (id === initialTarget) {
-              element.style.display = 'block';
-              element.style.opacity = '1';
-              element.style.transform = 'translateY(0)';
-            } else {
-              element.style.opacity = '0';
-              element.style.transform = 'translateY(10px)';
-              element.style.display = 'none';
-            }
-          }
-        });
-      }
-    });
-
-    // Handle clicks
-    btns.forEach((btn, index) => {
-      btn.addEventListener('click', (e) => {
-        // Update slider position
-        switcher.classList.remove('pos-0', 'pos-1', 'pos-2');
-        switcher.classList.add(`pos-${index}`);
-
-        // Update button active states
-        btns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        // Swap views
-        const target = (e.currentTarget as HTMLButtonElement).dataset.target;
-        
-        Object.entries(views).forEach(([id, element]) => {
-          if (element) {
-            if (id === target) {
-              element.style.display = 'block';
-              setTimeout(() => {
-                element.style.opacity = '1';
-                element.style.transform = 'translateY(0)';
-              }, 10);
-            } else {
-              element.style.opacity = '0';
-              element.style.transform = 'translateY(10px)';
-              element.style.display = 'none';
-            }
-          }
-        });
-
-        // Update URL via History API
-        const newPath = getPathForView(target || '');
-        
-        // Preserve language prefix if present (e.g., /en, /jp)
-        const langMatch = window.location.pathname.match(/^(\/[a-z]{2})(?:\/|$)/);
-        const langPrefix = langMatch ? langMatch[1] : '';
-
-        const fullNewPath = `${langPrefix}${newPath}`
-          .replace(/\/{2,}/g, '/')
-          .replace(/\/$/, '') || '/';
-        
-        // Only push if the path actually changes to avoid bloating history
-        if (window.location.pathname !== fullNewPath) {
-          window.history.pushState({ target }, '', fullNewPath);
+        if (!animate) {
+          element.style.opacity = '1';
+          element.style.transform = 'translateY(0)';
+          return;
         }
 
-        notifyRouteChange(target || 'links-view', fullNewPath);
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(10px)';
+        window.requestAnimationFrame(() => {
+          element.style.opacity = '1';
+          element.style.transform = 'translateY(0)';
+        });
+        return;
+      }
+
+      element.style.opacity = '0';
+      element.style.transform = 'translateY(10px)';
+      element.style.display = 'none';
+    };
+
+    const applyTabState = (target: string, animate: boolean) => {
+      const nextIndex = btns.findIndex((btn) => btn.dataset.target === target);
+      if (nextIndex === -1) return;
+
+      switcher.classList.remove('pos-0', 'pos-1', 'pos-2');
+      switcher.classList.add(`pos-${nextIndex}`);
+
+      btns.forEach((btn) => {
+        btn.classList.toggle('active', btn.dataset.target === target);
+      });
+
+      Object.entries(views).forEach(([viewId, element]) => {
+        if (element instanceof HTMLElement) {
+          setViewVisibility(element, viewId === target, animate);
+        }
+      });
+    };
+
+    const getTargetPath = (target: string) => {
+      const { routeLang } = parseAppPath(window.location.pathname);
+
+      if (target === 'projects-view') {
+        return buildAppPath('projects-view', routeLang ?? '', 'software');
+      }
+
+      if (target === 'commission-view') {
+        return buildAppPath('commission-view', routeLang ?? '');
+      }
+
+      return buildAppPath('links-view', routeLang ?? '');
+    };
+
+    const syncFromLocation = (animate: boolean) => {
+      const { view } = parseAppPath(window.location.pathname);
+      applyTabState(view, animate);
+      notifyRouteChange(view, window.location.pathname);
+    };
+
+    btns.forEach((btn) => {
+      btn.addEventListener('click', (event) => {
+        const target = (event.currentTarget as HTMLButtonElement).dataset.target || 'links-view';
+        const nextPath = getTargetPath(target);
+
+        applyTabState(target, true);
+
+        if (window.location.pathname !== nextPath) {
+          window.history.pushState({ target }, '', nextPath);
+        }
+
+        notifyRouteChange(target, nextPath);
       });
     });
 
-    // Handle browser back/forward buttons
-    window.addEventListener('popstate', (e) => {
-      const pathname = window.location.pathname.replace(/\/$/, '');
-      let popTarget = 'links-view';
-      if (pathname.endsWith('/software') || pathname.endsWith('/pan') || pathname.endsWith('/dam-vision')) {
-        popTarget = 'projects-view';
-      } else if (pathname.endsWith('/commission')) {
-        popTarget = 'commission-view';
-      }
-
-      notifyRouteChange(popTarget, window.location.pathname);
-
-      btns.forEach((btn, index) => {
-        const htmlBtn = btn as HTMLElement;
-        if (htmlBtn.dataset.target === popTarget) {
-          switcher.classList.remove('pos-0', 'pos-1', 'pos-2');
-          switcher.classList.add(`pos-${index}`);
-          btns.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-
-          Object.entries(views).forEach(([id, element]) => {
-            if (element) {
-              if (id === popTarget) {
-                element.style.display = 'block';
-                setTimeout(() => {
-                  element.style.opacity = '1';
-                  element.style.transform = 'translateY(0)';
-                }, 10);
-              } else {
-                element.style.opacity = '0';
-                element.style.transform = 'translateY(10px)';
-                element.style.display = 'none';
-              }
-            }
-          });
-        }
-      });
+    window.addEventListener('popstate', () => {
+      syncFromLocation(true);
     });
+
+    const { view } = parseAppPath(window.location.pathname);
+    applyTabState(view, false);
   }
 
-  // Run on load
   setupTabs();
 </script>

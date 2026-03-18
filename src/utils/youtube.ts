@@ -4,8 +4,78 @@ export interface PlaylistVideo {
   authors: Record<string, string>;
 }
 
+interface ExtractedPlaylistVideo {
+  id: string;
+  title: string;
+  author: string;
+}
+
 function decodeYoutubeText(value: string) {
   return value.replace(/\\u0026/g, '&').trim();
+}
+
+function extractVideosFromHtml(html: string): ExtractedPlaylistVideo[] {
+  const match = html.match(/var ytInitialData = (\{.*?\});<\/script>/);
+  if (!match) return [];
+
+  const videos: ExtractedPlaylistVideo[] = [];
+
+  try {
+    const data = JSON.parse(match[1]);
+
+    const findRenderers = (obj: unknown) => {
+      if (!obj || typeof obj !== 'object') return;
+
+      if ('playlistVideoRenderer' in obj) {
+        const renderer = (obj as {
+          playlistVideoRenderer?: {
+            videoId?: string;
+            title?: { runs?: { text?: string }[] };
+            shortBylineText?: { runs?: { text?: string }[] };
+          };
+        }).playlistVideoRenderer;
+
+        if (renderer?.videoId) {
+          videos.push({
+            id: renderer.videoId,
+            title: renderer.title?.runs?.map((run) => run.text || '').join('') || 'Video',
+            author: renderer.shortBylineText?.runs?.map((run) => run.text || '').join('') || 'Unknown Artist',
+          });
+        }
+      }
+
+      Object.values(obj).forEach(findRenderers);
+    };
+
+    findRenderers(data);
+  } catch (error) {
+    console.error('Error parsing ytInitialData', error);
+  }
+
+  return videos;
+}
+
+function mergeLocalizedVideos(
+  primaryVideos: ExtractedPlaylistVideo[],
+  localizedVideos: ExtractedPlaylistVideo[],
+): PlaylistVideo[] {
+  const localizedById = new Map(localizedVideos.map((video) => [video.id, video]));
+
+  return primaryVideos.map((video) => {
+    const localizedVideo = localizedById.get(video.id);
+
+    return {
+      id: video.id,
+      titles: {
+        en: decodeYoutubeText(video.title),
+        ja: decodeYoutubeText(localizedVideo?.title ?? video.title),
+      },
+      authors: {
+        en: decodeYoutubeText(video.author),
+        ja: decodeYoutubeText(localizedVideo?.author ?? video.author),
+      },
+    };
+  });
 }
 
 export async function getPlaylistVideos(playlistId: string): Promise<PlaylistVideo[]> {
@@ -18,54 +88,11 @@ export async function getPlaylistVideos(playlistId: string): Promise<PlaylistVid
     ]);
 
     if (!resEn.ok || !resJa.ok) return [];
-    
+
     const htmlEn = await resEn.text();
     const htmlJa = await resJa.text();
-    
-    const extractVideos = (html: string) => {
-      const match = html.match(/var ytInitialData = (\{.*?\});<\/script>/);
-      if (!match) return [];
-      
-      const videos: { id: string; title: string; author: string }[] = [];
-      try {
-        const data = JSON.parse(match[1]);
-        
-        const findRenderers = (obj: any) => {
-          if (!obj || typeof obj !== 'object') return;
-          if (obj.playlistVideoRenderer) {
-            const r = obj.playlistVideoRenderer;
-            videos.push({
-              id: r.videoId,
-              title: r.title?.runs?.map((run: { text?: string }) => run.text || '').join('') || 'Video',
-              author: r.shortBylineText?.runs?.map((run: { text?: string }) => run.text || '').join('') || 'Unknown Artist',
-            });
-          }
-          for (const key of Object.keys(obj)) {
-            findRenderers(obj[key]);
-          }
-        };
-        findRenderers(data);
-      } catch (e) {
-        console.error('Error parsing ytInitialData', e);
-      }
-      return videos;
-    };
 
-    const videosEn = extractVideos(htmlEn);
-    const videosJa = extractVideos(htmlJa);
-    
-    // Zip them together
-    return videosEn.map((v, i) => ({
-      id: v.id,
-      titles: {
-        en: decodeYoutubeText(v.title),
-        ja: videosJa[i] ? decodeYoutubeText(videosJa[i].title) : decodeYoutubeText(v.title)
-      },
-      authors: {
-        en: decodeYoutubeText(v.author),
-        ja: videosJa[i] ? decodeYoutubeText(videosJa[i].author) : decodeYoutubeText(v.author)
-      }
-    }));
+    return mergeLocalizedVideos(extractVideosFromHtml(htmlEn), extractVideosFromHtml(htmlJa));
   } catch (e) {
     console.error('Failed to fetch YouTube playlist', e);
   }

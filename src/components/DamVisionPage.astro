@@ -14,138 +14,153 @@ interface Props {
 const { lang, version } = Astro.props;
 const t = (key: keyof typeof ui['en']) => ui[lang][key];
 ---
-<div class="dam-page">
-  <div class="dam-rail dam-hero-wrap">
-    <button type="button" class="dam-close" data-dam-close>
-      <Icon name="mdi:arrow-left" size={16} />
-      <span data-i18n="dam.close">{t('dam.close')}</span>
-    </button>
+<div data-dam-page>
+  <div class="dam-page">
+    <div class="dam-rail dam-hero-wrap">
+      <button type="button" class="dam-close" data-project-close>
+        <Icon name="mdi:arrow-left" size={16} />
+        <span data-i18n="dam.close">{t('dam.close')}</span>
+      </button>
 
-    <DamVisionHeroSection lang={lang} version={version} />
+      <DamVisionHeroSection lang={lang} version={version} />
+    </div>
+
+    <div class="dam-rail">
+      <section class="dam-panel-surface dam-screenshot-section">
+        <div class="dam-section-header dam-screenshot-header">
+          <p class="dam-section-kicker" data-i18n="dam.screenshot.eyebrow">{t('dam.screenshot.eyebrow')}</p>
+          <h3 class="dam-section-title" data-i18n="dam.screenshot.title">{t('dam.screenshot.title')}</h3>
+        </div>
+
+        <div class="dam-screenshot-frame">
+          <button type="button" class="dam-screenshot-trigger" data-dam-screenshot-open aria-label={lang === 'jp' ? 'スクリーンショットを拡大' : 'Open screenshot'}>
+            <img
+              class="dam-screenshot-image"
+              src={damVisionAssets.screenshot}
+              alt={lang === 'jp' ? 'DAM Visionの開発中スクリーンショット' : 'In-development DAM Vision screenshot'}
+              loading="lazy"
+              decoding="async"
+            />
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <div class="dam-rail dam-story-grid">
+      <section class="dam-panel-surface">
+        <div class="dam-section-header">
+          <p class="dam-section-kicker" data-i18n="dam.overview.eyebrow">{t('dam.overview.eyebrow')}</p>
+          <h3 class="dam-section-title" data-i18n="dam.overview.title">{t('dam.overview.title')}</h3>
+        </div>
+        <p class="dam-copy" data-i18n="dam.overview.body">{t('dam.overview.body')}</p>
+      </section>
+
+      <section class="dam-panel-surface">
+        <div class="dam-section-header">
+          <p class="dam-section-kicker" data-i18n="dam.hidden.eyebrow">{t('dam.hidden.eyebrow')}</p>
+          <h3 class="dam-section-title" data-i18n="dam.hidden.title">{t('dam.hidden.title')}</h3>
+        </div>
+        <p class="dam-copy" data-i18n="dam.hidden.body">{t('dam.hidden.body')}</p>
+      </section>
+    </div>
+
+    <div class="dam-rail">
+      <section class="dam-panel-surface">
+        <DamVisionEffectAtlas lang={lang} />
+      </section>
+    </div>
+
+    <div class="dam-rail">
+      <section class="dam-panel-surface">
+        <div class="dam-section-header">
+          <p class="dam-section-kicker" data-i18n="dam.ranking.eyebrow">{t('dam.ranking.eyebrow')}</p>
+          <h3 class="dam-section-title" data-i18n="dam.ranking.title">{t('dam.ranking.title')}</h3>
+        </div>
+        <p class="dam-copy" data-i18n="dam.ranking.body">{t('dam.ranking.body')}</p>
+      </section>
+    </div>
   </div>
 
-  <div class="dam-rail">
-    <section class="dam-panel-surface dam-screenshot-section">
-      <div class="dam-section-header dam-screenshot-header">
-        <p class="dam-section-kicker" data-i18n="dam.screenshot.eyebrow">{t('dam.screenshot.eyebrow')}</p>
-        <h3 class="dam-section-title" data-i18n="dam.screenshot.title">{t('dam.screenshot.title')}</h3>
-      </div>
+  <dialog class="dam-screenshot-dialog" data-dam-screenshot-dialog>
+    <div class="dam-screenshot-dialog-shell">
+      <button
+        type="button"
+        class="dam-screenshot-dialog-close"
+        data-dam-screenshot-close
+        aria-label={lang === 'jp' ? '閉じる' : 'Close'}
+      >
+        <Icon name="mdi:close" size={18} />
+      </button>
 
-      <div class="dam-screenshot-frame">
-        <button type="button" class="dam-screenshot-trigger" data-dam-screenshot-open aria-label={lang === 'jp' ? 'スクリーンショットを拡大' : 'Open screenshot'}>
-          <img
-            class="dam-screenshot-image"
-            src={damVisionAssets.screenshot}
-            alt={lang === 'jp' ? 'DAM Visionの開発中スクリーンショット' : 'In-development DAM Vision screenshot'}
-            loading="lazy"
-            decoding="async"
-          />
-        </button>
-      </div>
-    </section>
-  </div>
-
-  <div class="dam-rail dam-story-grid">
-    <section class="dam-panel-surface">
-      <div class="dam-section-header">
-        <p class="dam-section-kicker" data-i18n="dam.overview.eyebrow">{t('dam.overview.eyebrow')}</p>
-        <h3 class="dam-section-title" data-i18n="dam.overview.title">{t('dam.overview.title')}</h3>
-      </div>
-      <p class="dam-copy" data-i18n="dam.overview.body">{t('dam.overview.body')}</p>
-    </section>
-
-    <section class="dam-panel-surface">
-      <div class="dam-section-header">
-        <p class="dam-section-kicker" data-i18n="dam.hidden.eyebrow">{t('dam.hidden.eyebrow')}</p>
-        <h3 class="dam-section-title" data-i18n="dam.hidden.title">{t('dam.hidden.title')}</h3>
-      </div>
-      <p class="dam-copy" data-i18n="dam.hidden.body">{t('dam.hidden.body')}</p>
-    </section>
-  </div>
-
-  <div class="dam-rail">
-    <section class="dam-panel-surface">
-      <DamVisionEffectAtlas lang={lang} />
-    </section>
-  </div>
-
-  <div class="dam-rail">
-    <section class="dam-panel-surface">
-      <div class="dam-section-header">
-        <p class="dam-section-kicker" data-i18n="dam.ranking.eyebrow">{t('dam.ranking.eyebrow')}</p>
-        <h3 class="dam-section-title" data-i18n="dam.ranking.title">{t('dam.ranking.title')}</h3>
-      </div>
-      <p class="dam-copy" data-i18n="dam.ranking.body">{t('dam.ranking.body')}</p>
-    </section>
-  </div>
+      <img
+        class="dam-screenshot-dialog-image"
+        src={damVisionAssets.screenshot}
+        alt={lang === 'jp' ? 'DAM Visionの開発中スクリーンショット' : 'In-development DAM Vision screenshot'}
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+  </dialog>
 </div>
 
-<dialog class="dam-screenshot-dialog" data-dam-screenshot-dialog>
-  <div class="dam-screenshot-dialog-shell">
-    <button
-      type="button"
-      class="dam-screenshot-dialog-close"
-      data-dam-screenshot-close
-      aria-label={lang === 'jp' ? '閉じる' : 'Close'}
-    >
-      <Icon name="mdi:close" size={18} />
-    </button>
-
-    <img
-      class="dam-screenshot-dialog-image"
-      src={damVisionAssets.screenshot}
-      alt={lang === 'jp' ? 'DAM Visionの開発中スクリーンショット' : 'In-development DAM Vision screenshot'}
-      loading="lazy"
-      decoding="async"
-    />
-  </div>
-</dialog>
-
 <script>
-  const openButton = document.querySelector('[data-dam-screenshot-open]');
-  const closeButton = document.querySelector('[data-dam-screenshot-close]');
-  const dialog = document.querySelector('[data-dam-screenshot-dialog]');
-  let closeTimer;
+  const setupDamScreenshotDialogs = () => {
+    document.querySelectorAll('[data-dam-page]').forEach((root) => {
+      if (!(root instanceof HTMLElement) || root.dataset.damPageReady === 'true') return;
+      root.dataset.damPageReady = 'true';
 
-  const openDialog = () => {
-    if (!(dialog instanceof HTMLDialogElement) || dialog.open) return;
-    dialog.showModal();
-    document.documentElement.classList.add('dam-screenshot-open');
-    document.body.classList.add('dam-screenshot-open');
-    requestAnimationFrame(() => {
-      dialog.dataset.state = 'open';
+      const openButton = root.querySelector('[data-dam-screenshot-open]');
+      const closeButton = root.querySelector('[data-dam-screenshot-close]');
+      const dialog = root.querySelector('[data-dam-screenshot-dialog]');
+      let closeTimer = 0;
+
+      const openDialog = () => {
+        if (!(dialog instanceof HTMLDialogElement) || dialog.open) return;
+        dialog.showModal();
+        document.documentElement.classList.add('dam-screenshot-open');
+        document.body.classList.add('dam-screenshot-open');
+        requestAnimationFrame(() => {
+          dialog.dataset.state = 'open';
+        });
+      };
+
+      const closeDialog = () => {
+        if (!(dialog instanceof HTMLDialogElement) || !dialog.open) return;
+        dialog.dataset.state = 'closing';
+        window.clearTimeout(closeTimer);
+        closeTimer = window.setTimeout(() => {
+          dialog.close();
+          delete dialog.dataset.state;
+          document.documentElement.classList.remove('dam-screenshot-open');
+          document.body.classList.remove('dam-screenshot-open');
+        }, 220);
+      };
+
+      if (
+        openButton instanceof HTMLButtonElement &&
+        closeButton instanceof HTMLButtonElement &&
+        dialog instanceof HTMLDialogElement
+      ) {
+        openButton.addEventListener('click', openDialog);
+        closeButton.addEventListener('click', closeDialog);
+        dialog.addEventListener('cancel', (event) => {
+          event.preventDefault();
+          closeDialog();
+        });
+        dialog.addEventListener('click', (event) => {
+          if (event.target === dialog) closeDialog();
+        });
+        dialog.addEventListener('close', () => {
+          window.clearTimeout(closeTimer);
+          delete dialog.dataset.state;
+          document.documentElement.classList.remove('dam-screenshot-open');
+          document.body.classList.remove('dam-screenshot-open');
+        });
+      }
     });
   };
 
-  const closeDialog = () => {
-    if (!(dialog instanceof HTMLDialogElement) || !dialog.open) return;
-    dialog.dataset.state = 'closing';
-    window.clearTimeout(closeTimer);
-    closeTimer = window.setTimeout(() => {
-      dialog.close();
-      delete dialog.dataset.state;
-      document.documentElement.classList.remove('dam-screenshot-open');
-      document.body.classList.remove('dam-screenshot-open');
-    }, 220);
-  };
-
-  if (openButton instanceof HTMLButtonElement && closeButton instanceof HTMLButtonElement && dialog instanceof HTMLDialogElement) {
-    openButton.addEventListener('click', openDialog);
-    closeButton.addEventListener('click', closeDialog);
-    dialog.addEventListener('cancel', (event) => {
-      event.preventDefault();
-      closeDialog();
-    });
-    dialog.addEventListener('click', (event) => {
-      if (event.target === dialog) closeDialog();
-    });
-    dialog.addEventListener('close', () => {
-      window.clearTimeout(closeTimer);
-      delete dialog.dataset.state;
-      document.documentElement.classList.remove('dam-screenshot-open');
-      document.body.classList.remove('dam-screenshot-open');
-    });
-  }
+  setupDamScreenshotDialogs();
 </script>
 
 <style>

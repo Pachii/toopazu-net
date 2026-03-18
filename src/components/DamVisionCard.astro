@@ -13,7 +13,7 @@ interface Props {
 const { lang, title, description, version } = Astro.props;
 const t = (key: keyof typeof ui['en']) => ui[lang][key];
 ---
-<button type="button" class="dam-card" data-dam-open aria-expanded="false">
+<button type="button" class="dam-card" data-project-open aria-expanded="false">
   <div class="dam-card-inner">
     <span class="dam-version" data-i18n="dam.version">{version}</span>
 
@@ -42,23 +42,32 @@ const t = (key: keyof typeof ui['en']) => ui[lang][key];
 
 <style>
   .dam-card {
+    appearance: none;
+    -webkit-appearance: none;
     width: 100%;
     display: block;
     text-align: left;
-    margin-top: 16px;
+    padding: 0;
+    font: inherit;
     background: linear-gradient(180deg, #718ea5, #678399);
     border-radius: 26px;
     color: #fff;
-    transition: transform 0.22s ease, box-shadow 0.22s ease;
+    transition:
+      transform 0.26s var(--project-card-hover-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+      box-shadow 0.26s var(--project-card-hover-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+      border-color 0.26s ease;
     box-shadow: 0 14px 28px rgba(95, 123, 148, 0.16);
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     position: relative;
+    transform-origin: center center;
+    will-change: transform, box-shadow;
   }
 
   .dam-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 18px 30px rgba(95, 123, 148, 0.2);
+    transform: var(--project-card-hover-transform, translateY(-2px) scale(1.008));
+    box-shadow: 0 20px 34px rgba(95, 123, 148, 0.22);
+    border-color: rgba(255, 255, 255, 0.16);
   }
 
   .dam-card:hover .dam-corner-arrow {
@@ -70,7 +79,7 @@ const t = (key: keyof typeof ui['en']) => ui[lang][key];
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0));
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.01) 72%, rgba(255, 255, 255, 0));
     pointer-events: none;
   }
 
@@ -161,7 +170,9 @@ const t = (key: keyof typeof ui['en']) => ui[lang][key];
     right: 24px;
     bottom: 24px;
     opacity: 0.72;
-    transition: transform 0.22s ease, opacity 0.22s ease;
+    transition:
+      transform 0.26s var(--project-card-hover-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+      opacity 0.26s ease;
   }
 
   .dam-corner-arrow svg {
