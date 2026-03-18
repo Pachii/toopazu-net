@@ -3,6 +3,8 @@ export const topazPanLinks = {
   releases: 'https://github.com/Pachii/topaz-pan/releases',
 } as const;
 
+export const topazPanBundledVersion = 'v0.2.0-alpha';
+
 export const topazPanAssets = {
   screenshot: '/topaz-pan-demo/screenshot.svg',
   poster: '/topaz-pan-demo/poster.svg',
