@@ -9,11 +9,16 @@ interface Props {
   description: string;
   version: string;
   initialOpen?: boolean;
+  initialHidden?: boolean;
 }
 
-const { lang, title, description, version, initialOpen = false } = Astro.props;
+const { lang, title, description, version, initialOpen = false, initialHidden = false } = Astro.props;
 ---
-<section class="dam-experience" data-dam-experience data-project-route="dam-vision">
+<section
+  class={`dam-experience ${initialOpen ? 'is-focused-project' : ''} ${initialHidden ? 'is-hidden-project' : ''}`}
+  data-dam-experience
+  data-project-route="dam-vision"
+>
   <div class={`dam-shell ${initialOpen ? 'is-open' : ''}`} data-dam-shell>
     <div class="dam-compact">
       <DamVisionCard

@@ -9,11 +9,16 @@ interface Props {
   description: string;
   version: string;
   initialOpen?: boolean;
+  initialHidden?: boolean;
 }
 
-const { lang, title, description, version, initialOpen = false } = Astro.props;
+const { lang, title, description, version, initialOpen = false, initialHidden = false } = Astro.props;
 ---
-<section class="topaz-pan-experience" data-topaz-pan-experience data-project-route="pan">
+<section
+  class={`topaz-pan-experience ${initialOpen ? 'is-focused-project' : ''} ${initialHidden ? 'is-hidden-project' : ''}`}
+  data-topaz-pan-experience
+  data-project-route="pan"
+>
   <div class={`topaz-pan-shell ${initialOpen ? 'is-open' : ''}`} data-topaz-shell>
     <div class="topaz-pan-compact">
       <TopazPanCard

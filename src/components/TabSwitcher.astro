@@ -111,7 +111,7 @@ const initialIndex =
     const pathname = window.location.pathname.replace(/\/$/, ''); // Remove trailing slash
     let initialTarget = 'links-view';
     
-    if (pathname.endsWith('/software') || pathname.endsWith('/pan')) {
+    if (pathname.endsWith('/software') || pathname.endsWith('/pan') || pathname.endsWith('/dam-vision')) {
       initialTarget = 'projects-view';
     } else if (pathname.endsWith('/commission')) {
       initialTarget = 'commission-view';
@@ -196,7 +196,7 @@ const initialIndex =
     window.addEventListener('popstate', (e) => {
       const pathname = window.location.pathname.replace(/\/$/, '');
       let popTarget = 'links-view';
-      if (pathname.endsWith('/software') || pathname.endsWith('/pan')) {
+      if (pathname.endsWith('/software') || pathname.endsWith('/pan') || pathname.endsWith('/dam-vision')) {
         popTarget = 'projects-view';
       } else if (pathname.endsWith('/commission')) {
         popTarget = 'commission-view';

@@ -62,6 +62,7 @@ const initialView = pathname.endsWith('/software') || pathname.endsWith('/pan') 
     : 'links-view';
 const initialTopazOpen = pathname.endsWith('/pan');
 const initialDamOpen = pathname.endsWith('/dam-vision');
+const initialActiveProject = initialTopazOpen ? 'pan' : initialDamOpen ? 'dam-vision' : '';
 const visibleStyle = 'display: block; opacity: 1; transform: translateY(0);';
 const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
 ---
@@ -242,13 +243,19 @@ const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
       <CommissionCard />
     </div>
 
-    <div id="projects-view" class="tab-view projects-view" style={initialView === 'projects-view' ? visibleStyle : hiddenStyle}>
+    <div
+      id="projects-view"
+      class="tab-view projects-view"
+      style={initialView === 'projects-view' ? visibleStyle : hiddenStyle}
+      data-active-project={initialActiveProject || undefined}
+    >
       <TopazPanExperience
         lang={serverLang}
         title={t('project.title')} 
         description={t('project.subtitle')} 
         version={topazPanVersion}
         initialOpen={initialTopazOpen}
+        initialHidden={initialDamOpen}
       />
 
       <DamVisionExperience
@@ -257,6 +264,7 @@ const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
         description={t('dam.subtitle')}
         version={t('dam.version')}
         initialOpen={initialDamOpen}
+        initialHidden={initialTopazOpen}
       />
     </div>
   </div>
