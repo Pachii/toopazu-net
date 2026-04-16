@@ -1,5 +1,4 @@
 ---
-import { ui } from '../i18n/ui';
 import type { AppLang } from '../i18n/utils';
 
 interface Props {
@@ -10,73 +9,74 @@ interface Props {
 }
 
 const { lang, title, description, version } = Astro.props;
-const t = (key: keyof typeof ui['en']) => ui[lang][key];
+const locale = lang === 'jp' ? 'ja' : 'en';
 ---
-<button type="button" class="plugin-card" data-project-open aria-expanded="false">
-  <div class="card-inner">
-    <span class="version">{version}</span>
+<a
+  class="utau-card"
+  href="https://utau.link"
+  target="_blank"
+  rel="noreferrer noopener"
+  lang={locale}
+  aria-label={`${title} - ${description}`}
+>
+  <div class="utau-card-inner">
+    <span class="utau-version" data-i18n="utau.version">{version}</span>
 
-    <div class="plugin-copy">
-      <h2 class="plugin-title">
-        <span data-i18n="project.title">{title}</span>
-        <span class="plugin-title-emoji" aria-hidden="true">🍞</span>
-      </h2>
-
-      <p class="description" data-i18n="project.subtitle">{description}</p>
-
-      <div class="plugin-badges">
-        <span class="plugin-badge" data-i18n="project.meta.type">{t('project.meta.type')}</span>
-        <span class="plugin-badge" data-i18n="project.meta.platforms">{t('project.meta.platforms')}</span>
-      </div>
+    <div class="utau-copy">
+      <h2 class="utau-title" data-i18n="utau.title">{title}</h2>
+      <p class="utau-description" data-i18n="utau.subtitle">{description}</p>
     </div>
 
-    <span class="corner-arrow" aria-hidden="true">
+    <span class="utau-corner-arrow" aria-hidden="true">
       <svg viewBox="0 0 20 20" fill="none">
         <path d="M5 15L15 5" />
         <path d="M8 5H15V12" />
       </svg>
     </span>
   </div>
-</button>
+</a>
 
 <style>
-  .plugin-card {
-    appearance: none;
-    -webkit-appearance: none;
+  .utau-card {
     width: 100%;
     display: block;
     text-align: left;
-    padding: 0;
-    font: inherit;
-    background:
-      radial-gradient(circle at top right, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 36%),
-      linear-gradient(145deg, #8aafd1 0%, #7097bf 56%, #5d80ab 100%);
-    border-radius: 26px;
     color: #ffffff;
+    text-decoration: none;
+    background:
+      radial-gradient(circle at top right, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0) 36%),
+      linear-gradient(145deg, #9ec2e0 0%, #87acd1 56%, #7597c1 100%);
+    border-radius: 26px;
     transition:
       transform 0.26s var(--project-card-hover-ease, cubic-bezier(0.22, 1, 0.36, 1)),
       box-shadow 0.26s var(--project-card-hover-ease, cubic-bezier(0.22, 1, 0.36, 1)),
-      border-color 0.26s ease;
-    box-shadow: 0 14px 28px rgba(72, 110, 151, 0.14);
+      border-color 0.26s ease,
+      opacity 0.36s ease,
+      filter 0.48s ease,
+      max-height 0.72s var(--project-stack-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+      margin 0.56s var(--project-stack-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+      visibility 0s linear 0s;
+    box-shadow: 0 14px 28px rgba(90, 129, 171, 0.13);
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.14);
     position: relative;
-    transform-origin: center center;
-    will-change: transform, box-shadow;
+    transform-origin: top center;
+    will-change: transform, box-shadow, opacity, filter, max-height;
+    max-height: 280px;
   }
 
-  .plugin-card:hover {
+  .utau-card:hover {
     transform: var(--project-card-hover-transform, translateY(-2px) scale(1.008));
-    box-shadow: 0 20px 34px rgba(72, 110, 151, 0.2);
+    box-shadow: 0 20px 34px rgba(90, 129, 171, 0.18);
     border-color: rgba(255, 255, 255, 0.18);
   }
 
-  .plugin-card:hover .corner-arrow {
+  .utau-card:hover .utau-corner-arrow {
     transform: translate(2px, -2px);
     opacity: 1;
   }
 
-  .plugin-card::after {
+  .utau-card::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -84,7 +84,7 @@ const t = (key: keyof typeof ui['en']) => ui[lang][key];
     pointer-events: none;
   }
 
-  .card-inner {
+  .utau-card-inner {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -95,36 +95,24 @@ const t = (key: keyof typeof ui['en']) => ui[lang][key];
     z-index: 1;
   }
 
-  .plugin-copy {
+  .utau-copy {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
-    width: min(100%, 520px);
+    width: min(100%, 500px);
   }
 
-  .plugin-title {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0.35em;
-    font-size: clamp(2rem, 4.1vw, 3.3rem);
+  .utau-title {
+    margin: 0;
+    font-size: clamp(2rem, 4.1vw, 3.2rem);
     font-weight: 800;
     letter-spacing: -0.06em;
-    margin: 0;
-    line-height: 0.94;
-    flex-wrap: wrap;
-    width: fit-content;
-    max-width: 100%;
+    line-height: 0.95;
+    color: #ffffff;
   }
 
-  .plugin-title-emoji {
-    font-size: 1em;
-    line-height: 1;
-    transform: translateY(-0.01em);
-    filter: saturate(0.88);
-  }
-
-  .version {
+  .utau-version {
     display: inline-flex;
     align-items: center;
     min-height: 30px;
@@ -138,37 +126,15 @@ const t = (key: keyof typeof ui['en']) => ui[lang][key];
     text-transform: uppercase;
   }
 
-  .description {
+  .utau-description {
     font-size: 0.95rem;
     line-height: 1.5;
     opacity: 0.92;
     margin: 0;
-    max-width: 24ch;
+    max-width: 34ch;
   }
 
-  .plugin-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 2px;
-  }
-
-  .plugin-badge {
-    display: inline-flex;
-    align-items: center;
-    min-height: 28px;
-    padding: 0 10px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    line-height: 1;
-    white-space: nowrap;
-  }
-
-  .corner-arrow {
+  .utau-corner-arrow {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -183,12 +149,12 @@ const t = (key: keyof typeof ui['en']) => ui[lang][key];
       opacity 0.26s ease;
   }
 
-  .corner-arrow svg {
+  .utau-corner-arrow svg {
     width: 100%;
     height: 100%;
   }
 
-  .corner-arrow path {
+  .utau-corner-arrow path {
     stroke: rgba(255, 255, 255, 0.88);
     stroke-width: 1.6;
     stroke-linecap: round;
@@ -196,20 +162,20 @@ const t = (key: keyof typeof ui['en']) => ui[lang][key];
   }
 
   @media (max-width: 640px) {
-    .plugin-card {
+    .utau-card {
       border-radius: 22px;
     }
 
-    .card-inner {
+    .utau-card-inner {
       padding: 18px;
       min-height: 0;
     }
 
-    .description {
+    .utau-description {
       max-width: none;
     }
 
-    .corner-arrow {
+    .utau-corner-arrow {
       right: 18px;
       bottom: 18px;
       width: 18px;

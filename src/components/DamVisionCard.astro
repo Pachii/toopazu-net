@@ -49,14 +49,16 @@ const t = (key: keyof typeof ui['en']) => ui[lang][key];
     text-align: left;
     padding: 0;
     font: inherit;
-    background: linear-gradient(180deg, #718ea5, #678399);
+    background:
+      radial-gradient(circle at top right, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0) 36%),
+      linear-gradient(145deg, #7896b8 0%, #607ea3 56%, #4d6789 100%);
     border-radius: 26px;
     color: #fff;
     transition:
       transform 0.26s var(--project-card-hover-ease, cubic-bezier(0.22, 1, 0.36, 1)),
       box-shadow 0.26s var(--project-card-hover-ease, cubic-bezier(0.22, 1, 0.36, 1)),
       border-color 0.26s ease;
-    box-shadow: 0 14px 28px rgba(95, 123, 148, 0.16);
+    box-shadow: 0 14px 28px rgba(58, 86, 118, 0.15);
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.12);
     position: relative;
@@ -66,7 +68,7 @@ const t = (key: keyof typeof ui['en']) => ui[lang][key];
 
   .dam-card:hover {
     transform: var(--project-card-hover-transform, translateY(-2px) scale(1.008));
-    box-shadow: 0 20px 34px rgba(95, 123, 148, 0.22);
+    box-shadow: 0 20px 34px rgba(58, 86, 118, 0.21);
     border-color: rgba(255, 255, 255, 0.16);
   }
 
@@ -204,8 +206,8 @@ const t = (key: keyof typeof ui['en']) => ui[lang][key];
     position: absolute;
     inset: 0;
     background:
-      linear-gradient(to left, rgba(106, 132, 154, 0.02), rgba(106, 132, 154, 0.16)),
-      radial-gradient(circle at center, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 62%);
+      linear-gradient(to left, rgba(71, 99, 131, 0.02), rgba(71, 99, 131, 0.13)),
+      radial-gradient(circle at center, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 62%);
     pointer-events: none;
   }
 

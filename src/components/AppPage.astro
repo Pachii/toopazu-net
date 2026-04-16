@@ -4,6 +4,7 @@ import ProfileHeader from './ProfileHeader.astro';
 import SocialIconRow from './SocialIconRow.astro';
 import TabSwitcher from './TabSwitcher.astro';
 import FeaturedCard from './FeaturedCard.astro';
+import UtauLinkCard from './UtauLinkCard.astro';
 import TopazPanExperience from './TopazPanExperience.astro';
 import DamVisionExperience from './DamVisionExperience.astro';
 import CommissionCard from './CommissionCard.astro';
@@ -133,6 +134,15 @@ const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
       data-active-project={initialActiveProject || undefined}
       data-stack-mode={initialActiveProject ? 'focused' : 'list'}
     >
+      <div class="utau-link-card-shell">
+        <UtauLinkCard
+          lang={serverLang}
+          title={t('utau.title')}
+          description={t('utau.subtitle')}
+          version={t('utau.version')}
+        />
+      </div>
+
       <TopazPanExperience
         lang={serverLang}
         title={t('project.title')} 
@@ -209,8 +219,48 @@ const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
     transition-delay: 0.06s, 0.06s, 0.04s, 0s, 0s;
   }
 
-  .projects-view[data-stack-mode='list'] > .topaz-pan-experience {
+  .projects-view > .utau-link-card-shell {
+    position: relative;
+    transition:
+      opacity 0.36s ease,
+      transform 0.72s var(--project-stack-ease),
+      filter 0.48s ease,
+      max-height 0.72s var(--project-stack-ease),
+      margin 0.56s var(--project-stack-ease),
+      visibility 0s linear 0s;
+    max-height: 280px;
+    transform-origin: top center;
+    will-change: opacity, transform, filter, max-height;
+  }
+
+  .projects-view[data-stack-phase='returning'] > .utau-link-card-shell {
+    transition:
+      opacity 0.42s ease,
+      transform 0.82s var(--project-stack-return-ease),
+      filter 0.52s ease,
+      max-height 0.82s var(--project-stack-return-ease),
+      margin 0.74s var(--project-stack-return-ease),
+      visibility 0s linear 0s;
+  }
+
+  .projects-view[data-stack-mode='list'] > .utau-link-card-shell {
     margin-top: 4px;
+  }
+
+  .projects-view[data-stack-mode='list'] > .topaz-pan-experience {
+    margin-top: 20px;
+  }
+
+  .projects-view[data-stack-mode='focused'] > .utau-link-card-shell {
+    opacity: 0;
+    filter: blur(12px) saturate(0.82);
+    max-height: 0;
+    overflow: hidden;
+    margin: 0;
+    pointer-events: none;
+    visibility: hidden;
+    transform: translateY(calc(var(--project-stack-hidden-shift) * -1)) scale(var(--project-stack-hidden-scale));
+    transition-delay: 0s, 0s, 0s, 0s, 0.62s;
   }
 
   .projects-view[data-stack-mode='list'] > .dam-experience {
@@ -246,7 +296,8 @@ const hiddenStyle = 'display: none; opacity: 0; transform: translateY(10px);';
 
   @media (prefers-reduced-motion: reduce) {
     .projects-view,
-    .projects-view > [data-project-route] {
+    .projects-view > [data-project-route],
+    .projects-view > .utau-link-card-shell {
       transition: none;
     }
   }
